@@ -26,4 +26,4 @@ export default class ConsolePlugin extends Plugin {
       </div>
     )
   }
-} 
+}

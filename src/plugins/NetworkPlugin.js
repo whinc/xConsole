@@ -7,4 +7,4 @@ export default class NetworkPlugin extends Plugin {
       <div>Network</div>
     )
   }
-} 
+}

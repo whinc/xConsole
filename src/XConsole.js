@@ -6,7 +6,7 @@ import {Tabs, Tab} from 'material-ui/Tabs'
  * XConsole 同时肩负两个职责:
  * 1. 作为组件，负责渲染面板视图
  * 2. 作为插件管理者，向插件提供接口、数据、事件分发
- * 
+ *
  * @class XConsole
  * @extends {Component}
  */
@@ -21,14 +21,14 @@ class XConsole extends Component {
     onClose: () => {}
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       value: props.plugins[0] ? props.plugins[0].name : ''
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const originLog = window.console.log
     window.console.log = (...args) => {
       XConsole.dispatchEvent({
@@ -42,7 +42,7 @@ class XConsole extends Component {
     }
   }
 
-  render() {
+  render () {
     const {plugins, onClose} = this.props
     return (
       <div style={{display: 'flex', flexGrow: 1, flexDirection: 'column'}}>
@@ -70,25 +70,25 @@ Object.assign(XConsole, {
   eventListeners: {},
   plugins: [],
 
-  addPlugin(plugin) {
+  addPlugin (plugin) {
     this.plugins.push(plugin)
   },
 
-  addEventListener(eventType, handler) {
+  addEventListener (eventType, handler) {
     if (!this.eventListeners[eventType]) {
       this.eventListeners[eventType] = []
     }
     this.eventListeners[eventType].push(handler)
   },
 
-  removeEventListener(eventType, hander) {
+  removeEventListener (eventType, hander) {
     if (this.eventListeners[eventType]) {
       const foundIndex = this.eventListeners[eventType].findIndex(v => v === hander)
       this.eventListeners[eventType].splice(foundIndex, 1)
     }
   },
 
-  dispatchEvent(event) {
+  dispatchEvent (event) {
     if (this.eventListeners[event.type]) {
       this.eventListeners[event.type].forEach(handler => handler(event))
     }

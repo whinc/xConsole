@@ -33,6 +33,8 @@ const networkPlugin = {
 XConsole.addPlugin(consolePlugin)
 XConsole.addPlugin(networkPlugin)
 
+// addStylesheetStyle()
+
 window.addEventListener('load', function () {
   showEntry()
 })
@@ -57,11 +59,11 @@ function showEntry () {
   document.body.appendChild(entry)
 }
 
-function hideEntry () {
-  if (entry) {
-    document.body.removeChild(entry)
-  }
-}
+// function hideEntry () {
+//   if (entry) {
+//     document.body.removeChild(entry)
+//   }
+// }
 
 function showPanel () {
   if (!panel) {
@@ -70,6 +72,7 @@ function showPanel () {
       display: flex;
       flex-direction: column;
       position: absolute;
+      background-color: rgba(0,0,0,.6);
       z-index: 1000;
       top: 0px;
       bottom: 0px;
@@ -80,26 +83,36 @@ function showPanel () {
       <MuiThemeProvider muiTheme={muiTheme}>
         <XConsole
           plugins={XConsole.plugins}
-          onClose={() => { hidePanel(showEntry) }}
+          onClose={() => { hidePanel() }}
         />
       </MuiThemeProvider>
     , panel)
   }
   panel.classList.add('animated')
-  panel.classList.remove('slideOutDown')
-  panel.classList.add('slideInUp')
+  panel.classList.remove('fadeOut')
+  panel.classList.add('fadeIn')
+  panel.firstElementChild.classList.add('animated')
+  panel.firstElementChild.classList.remove('slideOutDown')
+  panel.firstElementChild.classList.add('slideInUp')
   document.body.appendChild(panel)
 }
 
-function hidePanel (callback) {
+function hidePanel () {
   if (panel) {
-    panel.classList.remove('slideInUp')
-    panel.classList.add('slideOutDown')
-    // setTimeout(() => {
-    //   if (typeof callback === 'function') {
-    //     callback()
-    //   }
-    //   document.body.removeChild(panel)
-    // }, 400)
+    panel.firstElementChild.classList.remove('slideInUp')
+    panel.firstElementChild.classList.add('slideOutDown')
+    panel.classList.remove('fadeIn')
+    panel.classList.add('fadeOut')
+    setTimeout(() => {
+      document.body.removeChild(panel)
+    }, 500)
   }
+}
+
+// 动态添加 CSS 样式表（嵌入式）
+function addStylesheetStyle () {
+  var style = document.createElement('style')
+  style.setAttribute('type', 'text/css')
+  style.innerHTML = '.animated{-webkit-animation-duration:.5s;animation-duration:.5s;-webkit-animation-fill-mode:both;animation-fill-mode:both}@-webkit-keyframes slideInUp{0%{-webkit-transform:translate3d(0,100%,0);transform:translate3d(0,100%,0);visibility:visible}to{-webkit-transform:translateZ(0);transform:translateZ(0)}}@keyframes slideInUp{0%{-webkit-transform:translate3d(0,100%,0);transform:translate3d(0,100%,0);visibility:visible}to{-webkit-transform:translateZ(0);transform:translateZ(0)}}.slideInUp{-webkit-animation-name:slideInUp;animation-name:slideInUp}@-webkit-keyframes slideOutDown{0%{-webkit-transform:translateZ(0);transform:translateZ(0)}to{visibility:hidden;-webkit-transform:translate3d(0,100%,0);transform:translate3d(0,100%,0)}}@keyframes slideOutDown{0%{-webkit-transform:translateZ(0);transform:translateZ(0)}to{visibility:hidden;-webkit-transform:translate3d(0,100%,0);transform:translate3d(0,100%,0)}}.slideOutDown{-webkit-animation-name:slideOutDown;animation-name:slideOutDown}'
+  document.head.appendChild(style)
 }
