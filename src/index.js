@@ -4,7 +4,7 @@ import './index.css'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import RaisedButton from 'material-ui/RaisedButton'
-import XConsole from './XConsole'
+import xConsole from './xConsole'
 import ConsolePlugin from './plugins/ConsolePlugin'
 import NetworkPlugin from './plugins/NetworkPlugin'
 
@@ -18,22 +18,18 @@ let muiTheme = getMuiTheme({
   }
 })
 
-if (!window.XConsole) {
-  window.XConsole = XConsole
+if (!window.xConsole) {
+  window.xConsole = xConsole
 }
 
-const consolePlugin = {
-  name: 'Console',
-  component: ConsolePlugin
-}
-const networkPlugin = {
-  name: 'Network',
-  component: NetworkPlugin
-}
-XConsole.addPlugin(consolePlugin)
-XConsole.addPlugin(networkPlugin)
+xConsole.addPlugin(new ConsolePlugin('xConsole:Console', 'Console'))
+xConsole.addPlugin(new NetworkPlugin('xConsole:Network', 'Network'))
 
 // addStylesheetStyle()
+
+window.addEventListener('DOMContentLoaded', () => {
+  xConsole.dispatchEvent({ type: 'ready' })
+})
 
 window.addEventListener('load', function () {
   showEntry()
@@ -81,10 +77,9 @@ function showPanel () {
     `
     ReactDOM.render(
       <MuiThemeProvider muiTheme={muiTheme}>
-        <XConsole
-          plugins={XConsole.plugins}
-          onClose={() => { hidePanel() }}
-        />
+        {xConsole.render({
+          onClose: () => hidePanel()
+        })}
       </MuiThemeProvider>
     , panel)
   }
@@ -110,9 +105,9 @@ function hidePanel () {
 }
 
 // 动态添加 CSS 样式表（嵌入式）
-function addStylesheetStyle () {
-  var style = document.createElement('style')
-  style.setAttribute('type', 'text/css')
-  style.innerHTML = '.animated{-webkit-animation-duration:.5s;animation-duration:.5s;-webkit-animation-fill-mode:both;animation-fill-mode:both}@-webkit-keyframes slideInUp{0%{-webkit-transform:translate3d(0,100%,0);transform:translate3d(0,100%,0);visibility:visible}to{-webkit-transform:translateZ(0);transform:translateZ(0)}}@keyframes slideInUp{0%{-webkit-transform:translate3d(0,100%,0);transform:translate3d(0,100%,0);visibility:visible}to{-webkit-transform:translateZ(0);transform:translateZ(0)}}.slideInUp{-webkit-animation-name:slideInUp;animation-name:slideInUp}@-webkit-keyframes slideOutDown{0%{-webkit-transform:translateZ(0);transform:translateZ(0)}to{visibility:hidden;-webkit-transform:translate3d(0,100%,0);transform:translate3d(0,100%,0)}}@keyframes slideOutDown{0%{-webkit-transform:translateZ(0);transform:translateZ(0)}to{visibility:hidden;-webkit-transform:translate3d(0,100%,0);transform:translate3d(0,100%,0)}}.slideOutDown{-webkit-animation-name:slideOutDown;animation-name:slideOutDown}'
-  document.head.appendChild(style)
-}
+// function addStylesheetStyle () {
+//   var style = document.createElement('style')
+//   style.setAttribute('type', 'text/css')
+//   style.innerHTML = '.animated{-webkit-animation-duration:.5s;animation-duration:.5s;-webkit-animation-fill-mode:both;animation-fill-mode:both}@-webkit-keyframes slideInUp{0%{-webkit-transform:translate3d(0,100%,0);transform:translate3d(0,100%,0);visibility:visible}to{-webkit-transform:translateZ(0);transform:translateZ(0)}}@keyframes slideInUp{0%{-webkit-transform:translate3d(0,100%,0);transform:translate3d(0,100%,0);visibility:visible}to{-webkit-transform:translateZ(0);transform:translateZ(0)}}.slideInUp{-webkit-animation-name:slideInUp;animation-name:slideInUp}@-webkit-keyframes slideOutDown{0%{-webkit-transform:translateZ(0);transform:translateZ(0)}to{visibility:hidden;-webkit-transform:translate3d(0,100%,0);transform:translate3d(0,100%,0)}}@keyframes slideOutDown{0%{-webkit-transform:translateZ(0);transform:translateZ(0)}to{visibility:hidden;-webkit-transform:translate3d(0,100%,0);transform:translate3d(0,100%,0)}}.slideOutDown{-webkit-animation-name:slideOutDown;animation-name:slideOutDown}'
+//   document.head.appendChild(style)
+// }
