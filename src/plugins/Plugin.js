@@ -29,7 +29,7 @@ export default class Plugin {
     if (typeof this[methodName] === 'function') {
       this[methodName](event, xConsole)
     } else {
-      this.print('onEvent() called')
+      // this.print('onEvent() called')
     }
   }
 

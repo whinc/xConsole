@@ -1,0 +1,26 @@
+.message-container {
+  padding: 6px
+}
+
+.log {
+  color: #000;
+  border-color: #000;
+  background-color: #FFF;
+}
+.warn {
+  color: orange;
+  border-color: #ffb930;
+  background-color: #fffacd;
+}
+
+.info {
+  color: #6a5acd;
+  border-color: #000;
+  background-color: #FFF;
+}
+
+.error {
+  color: #dc143c;
+  border-color: #f4a0ab;
+  background-color: #ffe4e1;
+}
