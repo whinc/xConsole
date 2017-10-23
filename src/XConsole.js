@@ -13,20 +13,32 @@ class XConsole {
 
   // 拦截 console
   hookConsole () {
+    const names = ['log', 'info', 'error', 'warn']
     const console = {}
-    console.log = window.console.log
-    window.console.log = (...args) => {
-      this.dispatchEvent({
-        type: 'console',
-        detail: {
+    names.forEach(name => {
+      console[name] = window.console[name]
+      window.console[name] = (...args) => {
+        this.dispatchEvent(new CustomEvent('console', {
           level: 'log',
           // 加个 random 避免 key 重复
           timestamp: Date.now() + Math.random(),
           args
-        }
-      })
-      console.log(...args)
-    }
+        }))
+      }
+    })
+    // console.log = window.console.log
+    // window.console.log = (...args) => {
+    //   this.dispatchEvent({
+    //     type: 'console',
+    //     detail: {
+    //       level: 'log',
+    //       // 加个 random 避免 key 重复
+    //       timestamp: Date.now() + Math.random(),
+    //       args
+    //     }
+    //   })
+    //   console.log(...args)
+    // }
 
     this.console = console
   }
@@ -123,5 +135,21 @@ class XConsoleView extends Component {
     )
   }
 }
+
+class Event {
+  constructor (type) {
+    this.type = type
+  }
+}
+
+class CustomEvent extends Event {
+  constructor (type, detail) {
+    super(type)
+    this.detail = detail
+  }
+}
+
+XConsole.Event = Event
+XConsole.CustomEvent = CustomEvent
 
 export default XConsole
