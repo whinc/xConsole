@@ -4,7 +4,7 @@ import './index.css'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import RaisedButton from 'material-ui/RaisedButton'
-import xConsole from './xConsole'
+import XConsole from './XConsole'
 import ConsolePlugin from './plugins/ConsolePlugin'
 import NetworkPlugin from './plugins/NetworkPlugin'
 
@@ -19,16 +19,16 @@ let muiTheme = getMuiTheme({
 })
 
 if (!window.xConsole) {
-  window.xConsole = xConsole
+  window.xConsole = new XConsole()
 }
 
-xConsole.addPlugin(new ConsolePlugin('xConsole:Console', 'Console'))
-xConsole.addPlugin(new NetworkPlugin('xConsole:Network', 'Network'))
+window.xConsole.addPlugin(new ConsolePlugin('xConsole:Console', 'Console'))
+window.xConsole.addPlugin(new NetworkPlugin('xConsole:Network', 'Network'))
 
 // addStylesheetStyle()
 
 window.addEventListener('DOMContentLoaded', () => {
-  xConsole.dispatchEvent({ type: 'ready' })
+  window.xConsole.dispatchEvent({ type: 'ready' })
 })
 
 window.addEventListener('load', function () {
@@ -77,7 +77,7 @@ function showPanel () {
     `
     ReactDOM.render(
       <MuiThemeProvider muiTheme={muiTheme}>
-        {xConsole.render({
+        {window.xConsole.render({
           onClose: () => hidePanel()
         })}
       </MuiThemeProvider>

@@ -7,6 +7,28 @@ class XConsole {
   constructor () {
     this.eventListeners = {}
     this.plugins = []
+
+    this.hookConsole()
+  }
+
+  // 拦截 console
+  hookConsole () {
+    const console = {}
+    console.log = window.console.log
+    window.console.log = (...args) => {
+      this.dispatchEvent({
+        type: 'console',
+        detail: {
+          level: 'log',
+          // 加个 random 避免 key 重复
+          timestamp: Date.now() + Math.random(),
+          args
+        }
+      })
+      console.log(...args)
+    }
+
+    this.console = console
   }
 
   addPlugin (plugin) {
@@ -102,22 +124,4 @@ class XConsoleView extends Component {
   }
 }
 
-const xConsole = new XConsole()
-
-// 拦截 console
-xConsole.console = {}
-xConsole.console.log = window.console.log
-window.console.log = (...args) => {
-  xConsole.dispatchEvent({
-    type: 'console',
-    detail: {
-      level: 'log',
-      // 加个 random 避免 key 重复
-      timestamp: Date.now() + Math.random(),
-      args
-    }
-  })
-  xConsole.console.log(...args)
-}
-
-export default xConsole
+export default XConsole
