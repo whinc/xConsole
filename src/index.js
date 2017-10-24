@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
-import RaisedButton from 'material-ui/RaisedButton'
 import XConsole from './XConsole'
 import ConsolePlugin from './plugins/ConsolePlugin'
 import NetworkPlugin from './plugins/NetworkPlugin'
@@ -38,18 +37,9 @@ window.addEventListener('load', function () {
 function showEntry () {
   if (!entry) {
     entry = document.createElement('div')
-    entry.style.cssText = `
-      position: absolute;
-      right: 0px;
-      bottom: 0px;
-      z-index: 900;
-      margin-right: 10px;
-      margin-bottom: 10px;
-    `
+    entry.classList.add('entry')
     ReactDOM.render(
-      <MuiThemeProvider muiTheme={muiTheme}>
-        <RaisedButton label='xConsole' primary onClick={() => { showPanel() }} />
-      </MuiThemeProvider>
+      <button onClick={() => showPanel()}>xConsole</button>
       , entry)
   }
   document.body.appendChild(entry)
@@ -64,18 +54,7 @@ function showEntry () {
 function showPanel () {
   if (!panel) {
     panel = document.createElement('div')
-    panel.style.cssText = `
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      position: absolute;
-      background-color: rgba(0,0,0,.6);
-      z-index: 1000;
-      top: 0px;
-      bottom: 0px;
-      left: 0px;
-      right: 0px;
-    `
+    panel.classList.add('panel')
     ReactDOM.render(
       <MuiThemeProvider muiTheme={muiTheme}>
         {window.xConsole.render({
