@@ -21,6 +21,13 @@
   border-color: #FFF;
   background-color: #FFF;
 }
+
+.msg-box.debug {
+  color: #daa520;
+  border-color: #FFF;
+  background-color: #FFF;
+}
+
 .msg-box.warn {
   color: orange;
   border-color: #ffb930;

@@ -14,7 +14,7 @@ class XConsole {
   // 拦截 console
   hookConsole () {
     const console = {}
-    const names = ['log', 'info', 'error', 'warn', 'clear']
+    const names = ['log', 'info', 'error', 'warn', 'debug', 'clear']
     names.forEach(name => {
       console[name] = window.console[name]
       window.console[name] = (...args) => {

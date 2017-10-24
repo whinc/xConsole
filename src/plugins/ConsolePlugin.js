@@ -79,7 +79,7 @@ class ConsolePluginView extends React.Component {
     return (
       <div>
         {events.map((event, index) => {
-          const { type, detail: { timestamp, level, args } } = event
+          const { detail: { timestamp, level, args } } = event
           return (
             <div key={index} className={`msg-box ${level}`}>
               {isTimestampVisible && <span className={'timestamp'}>{this.formatDate(timestamp)}</span>}
