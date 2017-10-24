@@ -116,8 +116,10 @@ class XConsoleView extends Component {
         >
           {plugins.map((plugin) => {
             return (
-              <Tab key={plugin.id} label={plugin.name} value={plugin.name}>
-                {plugin.render()}
+              <Tab key={plugin.id} label={plugin.name} value={plugin.name} >
+                <div style={{overflowY: 'auto', height: '60vh'}}>
+                  {plugin.render()}
+                </div>
               </Tab>
             )
           })}

@@ -1,25 +1,26 @@
-.message-container {
-  padding: 6px
+.msg-box {
+  padding: 6px;
+  border-bottom: 1px solid;
 }
 
-.log {
+.msg-box.log {
   color: #000;
-  border-color: #000;
+  border-color: #FFF;
   background-color: #FFF;
 }
-.warn {
+.msg-box.warn {
   color: orange;
   border-color: #ffb930;
   background-color: #fffacd;
 }
 
-.info {
+.msg-box.info {
   color: #6a5acd;
-  border-color: #000;
+  border-color: #FFF;
   background-color: #FFF;
 }
 
-.error {
+.msg-box.error {
   color: #dc143c;
   border-color: #f4a0ab;
   background-color: #ffe4e1;

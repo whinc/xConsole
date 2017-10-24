@@ -67,6 +67,7 @@ function showPanel () {
     panel.style.cssText = `
       display: flex;
       flex-direction: column;
+      overflow: hidden;
       position: absolute;
       background-color: rgba(0,0,0,.6);
       z-index: 1000;

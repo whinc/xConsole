@@ -66,7 +66,7 @@ class ConsolePluginView extends React.Component {
         {this.state.events.map(event => {
           const { type, detail: { timestamp, level, args } } = event
           return (
-            <div key={timestamp} className={`message-container ${level}`}>
+            <div key={timestamp} className={`msg-box ${level}`}>
               {args.join('')}
             </div>
           )
