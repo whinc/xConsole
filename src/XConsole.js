@@ -14,23 +14,24 @@ class XConsole {
   // 拦截 console
   hookConsole () {
     const console = {}
-    const levels = ['log', 'info', 'error', 'warn', 'clear']
-    levels.forEach(level => {
-      console[level] = window.console[level]
-      window.console[level] = (...args) => {
-        const event = {
-          type: 'console',
-          detail: {
-            level,
-            args,
-            // 加个 random 避免 key 重复
-            timestamp: Date.now() + Math.random()
-          }
+    const names = ['log', 'info', 'error', 'warn', 'clear']
+    names.forEach(name => {
+      console[name] = window.console[name]
+      window.console[name] = (...args) => {
+        let _level = name
+        let _args = args
+        if (name === 'clear') {
+          _level = 'system'
+          _args = ['Console was cleared']
         }
-        this.dispatchEvent(event)
+        this.dispatchEvent(this.createEvent('console', {level: _level, args: _args}))
+
+        // call native console method
+        console[name](...args)
       }
     })
 
+    // save native console object in xConsole
     this.console = console
   }
 
@@ -75,6 +76,16 @@ class XConsole {
   dispatchEvent (event) {
     if (this.eventListeners[event.type]) {
       this.eventListeners[event.type].forEach(handler => handler(event))
+    }
+  }
+
+  createEvent (type, detail) {
+    return {
+      type: type,
+      detail: {
+        ...detail,
+        timestamp: Date.now()
+      }
     }
   }
 

@@ -20,9 +20,9 @@ export default class ConsolePlugin extends Plugin {
     }
 
     // Handle 'console.clear()' event
-    if (event.detail && event.detail.level === 'clear') {
+    if (event.detail && event.detail.level === 'system') {
       this.eventBuffer.length = 0
-      this.ref.setState({ events: [] })
+      this.ref.setState({ events: [event] })
       return
     }
 
@@ -46,7 +46,8 @@ class ConsolePluginView extends React.Component {
   constructor () {
     super(...arguments)
     this.state = {
-      events: []
+      events: [],
+      isTimestampVisible: true
     }
   }
 
@@ -60,14 +61,31 @@ class ConsolePluginView extends React.Component {
     }
   }
 
+  formatDate (timestamp) {
+    const align = (input, length = 2) => {
+      input = String(input)
+      if (input.length < length) {
+        return '0'.repeat(length - input.length) + input
+      } else {
+        return input
+      }
+    }
+    const d = new Date(timestamp)
+    return align(d.getHours()) + ':' + align(d.getMinutes()) + ':' + align(d.getSeconds()) + '.' + align(d.getMilliseconds(), 3)
+  }
+
   render () {
+    const {events, isTimestampVisible} = this.state
     return (
       <div>
-        {this.state.events.map(event => {
+        {events.map((event, index) => {
           const { type, detail: { timestamp, level, args } } = event
           return (
-            <div key={timestamp} className={`msg-box ${level}`}>
-              {args.join('')}
+            <div key={index} className={`msg-box ${level}`}>
+              {isTimestampVisible && <span className={'timestamp'}>{this.formatDate(timestamp)}</span>}
+              {' '}
+              <span>{args.join('')}</span>
+
             </div>
           )
         })}

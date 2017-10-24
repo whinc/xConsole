@@ -1,6 +1,19 @@
 .msg-box {
+  font-size: 15px;
   padding: 6px;
   border-bottom: 1px solid;
+}
+
+.msg-box.system{
+  color: gray;
+  border-color: #FFF;
+  background-color: #FFF;
+  font-style: italic;
+ }
+
+.msg-box .timestamp {
+  color: gray;
+  font-style: normal;
 }
 
 .msg-box.log {
