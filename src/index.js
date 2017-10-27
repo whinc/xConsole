@@ -1,21 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import XConsole from './XConsole'
 import ConsolePlugin from './plugins/ConsolePlugin'
 import NetworkPlugin from './plugins/NetworkPlugin'
 
 let panel = null
 let entry = null
-let muiTheme = getMuiTheme({
-  palette: {
-  },
-  button: {
-    textTransform: 'none'
-  }
-})
 
 if (!window.xConsole) {
   window.xConsole = new XConsole()
@@ -56,11 +47,11 @@ function showPanel () {
     panel = document.createElement('div')
     panel.classList.add('panel')
     ReactDOM.render(
-      <MuiThemeProvider muiTheme={muiTheme}>
+      <div>
         {window.xConsole.render({
           onClose: () => hidePanel()
         })}
-      </MuiThemeProvider>
+      </div>
     , panel)
   }
   panel.classList.add('animated')

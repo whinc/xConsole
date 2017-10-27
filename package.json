@@ -2,12 +2,11 @@
   "name": "xconsole",
   "version": "0.1.0",
   "dependencies": {
-    "material-ui": "^0.19.4",
-    "prop-types": "^15.6.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
   },
   "devDependencies": {
+    "prop-types": "^15.6.0",
     "babel-eslint": "^8.0.1",
     "react-scripts": "1.0.10",
     "standard": "^10.0.3"

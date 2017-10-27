@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import {Tabs, Tab} from 'material-ui/Tabs'
 import Plugin from './plugins/Plugin'
 
 class XConsole {
@@ -123,20 +122,70 @@ class XConsoleView extends Component {
         <Tabs
           style={{ flexGrow: 1, backgroundColor: 'white' }}
           value={this.state.value}
-          onChange={(value) => this.setState({ value })}
-        >
+          onChange={value => this.setState({ value })}>
           {plugins.map((plugin) => {
             return (
               <Tab key={plugin.id} label={plugin.name} value={plugin.name} >
-                <div style={{overflowY: 'auto', height: '60vh'}}>
-                  {plugin.render()}
-                </div>
+                {plugin.render()}
               </Tab>
             )
           })}
         </Tabs>
       </div>
     )
+  }
+}
+
+class Tabs extends Component {
+  static propTypes = {
+    style: PropTypes.object,
+    value: PropTypes.number,
+    onChange: PropTypes.func
+  }
+
+  render () {
+    const {children, style, value, onChange} = this.props
+    const _children = React.Children.toArray(children).filter((child, index) => {
+      const valid = React.isValidElement(child) && child.type.name === 'Tab'
+      if (!valid) {
+        console.warn(`The ${index} child of <Tabs> is <${child.type}> instead of <Tab>`)
+      }
+      return valid
+    })
+    return (
+      <div style={{flexDirection: 'column', ...style}}>
+        <div style={{display: 'flex', flexDirection: 'row', height: '44px'}}>
+          {_children.map((child, index) => {
+            const extraStyle = index !== _children.length - 1 ? {borderRight: '1px solid gray'} : {}
+            return (
+              <div
+                onClick={() => onChange(child.props.value)}
+                style={{flexGrow: 1, borderBottom: '1px solid gray', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', ...extraStyle}}>
+                <span>{child.props.label}</span>
+              </div>
+            )
+          })}
+        </div>
+        <div>
+          {_children.map((child, index) => {
+            return React.cloneElement(child, {_visible: child.props.value === value})
+          })}
+        </div>
+      </div>
+    )
+  }
+}
+
+class Tab extends Component {
+  static PropTypes = {
+    label: PropTypes.string,
+    value: PropTypes.number,
+    children: PropTypes.arrayOf(PropTypes.element)
+  }
+  render () {
+    return <div style={{ height: this.props._visible ? '60vh' : '0px', overflowY: 'auto' }}>
+      {this.props.children}
+    </div>
   }
 }
 
