@@ -139,7 +139,7 @@ class XConsoleView extends Component {
 class Tabs extends Component {
   static propTypes = {
     style: PropTypes.object,
-    value: PropTypes.number,
+    value: PropTypes.string,
     onChange: PropTypes.func
   }
 
@@ -156,12 +156,14 @@ class Tabs extends Component {
       <div style={{flexDirection: 'column', ...style}}>
         <div style={{display: 'flex', flexDirection: 'row', height: '44px'}}>
           {_children.map((child, index) => {
+            const {value, label} = child.props
             const extraStyle = index !== _children.length - 1 ? {borderRight: '1px solid gray'} : {}
             return (
               <div
-                onClick={() => onChange(child.props.value)}
+                key={value}
+                onClick={() => onChange(value)}
                 style={{flexGrow: 1, borderBottom: '1px solid gray', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', ...extraStyle}}>
-                <span>{child.props.label}</span>
+                <span>{label}</span>
               </div>
             )
           })}
@@ -179,7 +181,7 @@ class Tabs extends Component {
 class Tab extends Component {
   static PropTypes = {
     label: PropTypes.string,
-    value: PropTypes.number,
+    value: PropTypes.string,
     children: PropTypes.arrayOf(PropTypes.element)
   }
   render () {
