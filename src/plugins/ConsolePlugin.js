@@ -9,7 +9,7 @@ export default class ConsolePlugin extends Plugin {
     this.eventBuffer = []
   }
 
-  onEvent (event, xConsole) {
+  onEvent (xConsole, event) {
     // Only focus on console event
     if (!event || event.type !== 'console') return
 
@@ -32,7 +32,7 @@ export default class ConsolePlugin extends Plugin {
     })
   }
 
-  render () {
+  render (xConsole) {
     return (
       <ConsolePluginView
         eventBuffer={this.eventBuffer}

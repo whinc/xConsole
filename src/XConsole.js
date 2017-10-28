@@ -1,13 +1,75 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+/*
+ * Created by whincwu on 2017/10
+ */
+import React from 'react'
+import ReactDOM from 'react-dom'
+import './XConsole.css'
+import XConsoleView from './XConsoleView'
 import Plugin from './plugins/Plugin'
+import ConsolePlugin from './plugins/ConsolePlugin'
+import NetworkPlugin from './plugins/NetworkPlugin'
 
 class XConsole {
   constructor () {
+    this.panel = null
+    this.entry = null
+    // Hold native console object
+    this.console = window.console
     this.eventListeners = {}
     this.plugins = []
 
     this.hookConsole()
+    this.showEntry()
+
+    this.addPlugin(new ConsolePlugin('xConsole:Console', 'Console'))
+    this.addPlugin(new NetworkPlugin('xConsole:Network', 'Network'))
+  }
+
+  showEntry () {
+    if (!this.entry) {
+      this.entry = document.createElement('div')
+      this.entry.classList.add('entry')
+      ReactDOM.render(
+        <button onClick={() => this.showPanel()}>xConsole</button>
+        , this.entry)
+    }
+    document.body.appendChild(this.entry)
+  }
+
+  hideEntry () {
+    if (this.entry) {
+      document.body.removeChild(this.entry)
+    }
+  }
+
+  showPanel () {
+    if (!this.panel) {
+      this.panel = document.createElement('div')
+      this.panel.classList.add('panel')
+      ReactDOM.render(
+        <XConsoleView xConsole={this} onClose={() => this.hidePanel()} />
+        , this.panel)
+    }
+    // mask animation
+    this.panel.classList.add('animated', 'fadeIn')
+    this.panel.classList.remove('fadeOut')
+    // panel animation
+    this.panel.firstElementChild.classList.add('animated', 'slideInUp')
+    this.panel.firstElementChild.classList.remove('slideOutDown')
+    document.body.appendChild(this.panel)
+  }
+
+  hidePanel () {
+    if (this.panel) {
+      // mask animation
+      this.panel.firstElementChild.classList.remove('slideInUp')
+      this.panel.firstElementChild.classList.add('slideOutDown')
+      this.panel.classList.remove('fadeIn')
+      this.panel.classList.add('fadeOut')
+      setTimeout(() => {
+        document.body.removeChild(this.panel)
+      }, 500)
+    }
   }
 
   // 拦截 console
@@ -29,33 +91,32 @@ class XConsole {
         console[name](...args)
       }
     })
+  }
 
-    // save native console object in xConsole
-    this.console = console
+  getPlugins () {
+    return this.plugins
   }
 
   addPlugin (plugin) {
     if (!(plugin instanceof Plugin)) {
       throw new TypeError('Invalid plugin type')
     }
-
-    plugin.xConsole = this
-
     this.plugins.push(plugin)
-
     this.initPlugin(plugin)
   }
 
   initPlugin (plugin) {
-    const eventHandler = event => plugin.onEvent(event, this)
-    // this.addEventListener('init', eventHandler)  // 会导致每次添加插件都触发一次
-    if (typeof plugin.onInit === 'function') {
-      plugin.onInit()
+    if (typeof plugin.onInit === 'function') {  // Only triggle once
+      plugin.onInit(this)
     }
-    this.addEventListener('ready', eventHandler)
-    this.addEventListener('console', eventHandler)
 
-    // this.dispatchEvent({type: 'init'})
+    window.addEventListener('DOMContentLoaded', () => {
+      if (typeof plugin.onReady === 'function') { // Only triggle once
+        plugin.onReady(this)
+      }
+    })
+
+    this.addEventListener('console', event => plugin.onEvent(this, event))
   }
 
   addEventListener (eventType, handler) {
@@ -86,108 +147,6 @@ class XConsole {
         timestamp: Date.now()
       }
     }
-  }
-
-  render (props) {
-    return <XConsoleView plugins={this.plugins} {...props} />
-  }
-}
-
-class XConsoleView extends Component {
-  static propTypes = {
-    plugins: PropTypes.arrayOf(PropTypes.object),
-    onClose: PropTypes.func
-  }
-
-  static defaultProps = {
-    plugins: [],
-    onClose: () => {}
-  }
-
-  constructor (props) {
-    super(props)
-    this.state = {
-      value: props.plugins[0] ? props.plugins[0].name : ''
-    }
-  }
-
-  componentDidMount () {
-  }
-
-  render () {
-    const {plugins, onClose} = this.props
-    return (
-      <div style={{display: 'flex', flexGrow: 1, flexDirection: 'column'}}>
-        <div style={{ height: '40vh' }} onClick={onClose} />
-        <Tabs
-          style={{ flexGrow: 1, backgroundColor: 'white' }}
-          value={this.state.value}
-          onChange={value => this.setState({ value })}>
-          {plugins.map((plugin) => {
-            return (
-              <Tab key={plugin.id} label={plugin.name} value={plugin.name} >
-                {plugin.render()}
-              </Tab>
-            )
-          })}
-        </Tabs>
-      </div>
-    )
-  }
-}
-
-class Tabs extends Component {
-  static propTypes = {
-    style: PropTypes.object,
-    value: PropTypes.string,
-    onChange: PropTypes.func
-  }
-
-  render () {
-    const {children, style, value, onChange} = this.props
-    const _children = React.Children.toArray(children).filter((child, index) => {
-      const valid = React.isValidElement(child) && child.type.name === 'Tab'
-      if (!valid) {
-        console.warn(`The ${index} child of <Tabs> is <${child.type}> instead of <Tab>`)
-      }
-      return valid
-    })
-    return (
-      <div style={{flexDirection: 'column', ...style}}>
-        <div style={{display: 'flex', flexDirection: 'row', height: '44px'}}>
-          {_children.map((child, index) => {
-            const {value, label} = child.props
-            const extraStyle = index !== _children.length - 1 ? {borderRight: '1px solid gray'} : {}
-            return (
-              <div
-                key={value}
-                onClick={() => onChange(value)}
-                style={{flexGrow: 1, borderBottom: '1px solid gray', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', ...extraStyle}}>
-                <span>{label}</span>
-              </div>
-            )
-          })}
-        </div>
-        <div>
-          {_children.map((child, index) => {
-            return React.cloneElement(child, {_visible: child.props.value === value})
-          })}
-        </div>
-      </div>
-    )
-  }
-}
-
-class Tab extends Component {
-  static PropTypes = {
-    label: PropTypes.string,
-    value: PropTypes.string,
-    children: PropTypes.arrayOf(PropTypes.element)
-  }
-  render () {
-    return <div style={{ height: this.props._visible ? '60vh' : '0px', overflowY: 'auto' }}>
-      {this.props.children}
-    </div>
   }
 }
 
