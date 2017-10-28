@@ -14,11 +14,10 @@ class XConsole {
     this.panel = null
     this.entry = null
     // Hold native console object
-    this.console = window.console
+    this.console = this.hookConsole()
     this.eventListeners = {}
     this.plugins = []
 
-    this.hookConsole()
     this.showEntry()
 
     this.addPlugin(new ConsolePlugin('xConsole:Console', 'Console'))
@@ -72,7 +71,7 @@ class XConsole {
     }
   }
 
-  // 拦截 console
+  // Hook native console methods
   hookConsole () {
     const console = {}
     const names = ['log', 'info', 'error', 'warn', 'debug', 'clear']
@@ -91,6 +90,7 @@ class XConsole {
         console[name](...args)
       }
     })
+    return console
   }
 
   getPlugins () {
@@ -106,6 +106,9 @@ class XConsole {
   }
 
   initPlugin (plugin) {
+    // 'console' event should listen early
+    this.addEventListener('console', event => plugin.onEvent(this, event))
+
     if (typeof plugin.onInit === 'function') {  // Only triggle once
       plugin.onInit(this)
     }
@@ -115,8 +118,6 @@ class XConsole {
         plugin.onReady(this)
       }
     })
-
-    this.addEventListener('console', event => plugin.onEvent(this, event))
   }
 
   addEventListener (eventType, handler) {

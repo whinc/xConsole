@@ -1,5 +1,5 @@
 import React from 'react'
-import Plugin from './Plugin'
+import Plugin from '../Plugin'
 import './ConsolePlugin.css'
 
 export default class ConsolePlugin extends Plugin {
