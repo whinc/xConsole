@@ -17,13 +17,34 @@ export default class XConsoleView extends Component {
 
   constructor (props) {
     super(props)
-    const plugins = props.xConsole.getPlugins()
     this.state = {
-      value: plugins[0] ? plugins[0].name : ''
+      value: ''
     }
+
+    // bind methods used in JSX
+    this.changeTab = this.changeTab.bind(this)
   }
 
   componentDidMount () {
+    const plugins = this.props.xConsole.getPlugins()
+    this.changeTab(plugins[0] ? plugins[0].id : '')
+  }
+
+  changeTab (newValue, oldValue) {
+    this.setState({value: newValue})
+    setTimeout(() => {
+      const plugins = this.props.xConsole.getPlugins()
+      // trigger 'hide' event of disactived plugin
+      const disactivedPlugin = plugins.find(plugin => plugin.id === oldValue)
+      if (disactivedPlugin && typeof disactivedPlugin.onHide === 'function') {
+        disactivedPlugin.onHide()
+      }
+      // trigger 'show' event of actived plugin
+      const activedPlugin = plugins.find(plugin => plugin.id === newValue)
+      if (activedPlugin && typeof activedPlugin.onShow === 'function') {
+        activedPlugin.onShow()
+      }
+    }, 0)
   }
 
   render () {
@@ -34,10 +55,10 @@ export default class XConsoleView extends Component {
         <Tabs
           style={{ flexGrow: 1, backgroundColor: 'white' }}
           value={this.state.value}
-          onChange={value => this.setState({ value })}>
+          onChange={this.changeTab}>
           {xConsole.getPlugins().map((plugin) => {
             return (
-              <Tab key={plugin.id} label={plugin.name} value={plugin.name} >
+              <Tab key={plugin.id} label={plugin.name} value={plugin.id} >
                 {plugin.render(xConsole)}
               </Tab>
             )

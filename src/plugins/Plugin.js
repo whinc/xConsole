@@ -21,16 +21,16 @@ export default class Plugin {
   }
 
   onEvent (xConsole, event) {
-    if (typeof event !== 'object') {
-      return
-    }
+    // if (typeof event !== 'object') {
+    //   return
+    // }
 
-    const methodName = 'on' + event.type[0].toUpperCase() + event.type.substr(1)
-    if (typeof this[methodName] === 'function') {
-      this[methodName](event, xConsole)
-    } else {
-      // this.print('onEvent() called')
-    }
+    // const methodName = 'on' + event.type[0].toUpperCase() + event.type.substr(1)
+    // if (typeof this[methodName] === 'function') {
+    //   this[methodName](event, xConsole)
+    // } else {
+    //   // this.print('onEvent() called')
+    // }
   }
 
   // Trigger before starting to initialize a plugin.
@@ -53,12 +53,12 @@ export default class Plugin {
 
   // on plugin tab became visible
   onShow () {
-    // this.print('onShow() called')
+    console.log(`[${this.name}Plugin] onShow() called`)
   }
 
   // on plugin tab became invisible
   onHide () {
-    // this.print('onHide() called')
+    console.log(`[${this.name}Plugin] onHide() called`)
   }
 
   onXConsoleShow () {
