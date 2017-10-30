@@ -1,3 +1,7 @@
 import XConsole from './XConsole'
 
-window.xConsole = new XConsole()
+if (!window.XConsole) {
+  window.XConsole = XConsole
+}
+
+export default XConsole

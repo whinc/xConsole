@@ -14,7 +14,7 @@ export default class Tabs extends Component {
   // Filter out child that is not <Tab> type
   getTabs () {
     return React.Children.toArray(this.props.children).filter((child, index) => {
-      const valid = React.isValidElement(child) && child.type.name === 'Tab'
+      const valid = React.isValidElement(child)
       if (!valid) {
         console.warn(`The ${index} child of <Tabs> is <${child.type}> instead of <Tab>`)
       }
