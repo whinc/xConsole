@@ -62,10 +62,10 @@ export default class Plugin {
   }
 
   onXConsoleShow () {
-    // this.print('onXConsoleShow() called')
+    console.log(`[${this.name}Plugin] onXConsoleShow() called`)
   }
 
   onXConsoleHide () {
-    // this.print('onXConsoleHide() called')
+    console.log(`[${this.name}Plugin] onXConsoleHide() called`)
   }
 }

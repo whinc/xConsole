@@ -56,6 +56,8 @@ class XConsole {
     this.panel.firstElementChild.classList.add('animated', 'slideInUp')
     this.panel.firstElementChild.classList.remove('slideOutDown')
     document.body.appendChild(this.panel)
+
+    this.dispatchEvent(this.createEvent('XConsoleShow'))
   }
 
   hidePanel () {
@@ -69,6 +71,8 @@ class XConsole {
         document.body.removeChild(this.panel)
       }, 500)
     }
+
+    this.dispatchEvent(this.createEvent('XConsoleHide'))
   }
 
   // Hook native console methods
@@ -106,16 +110,36 @@ class XConsole {
   }
 
   initPlugin (plugin) {
-    // 'console' event should listen early
-    this.addEventListener('console', event => plugin.onEvent(this, event))
+    // listen 'console' event. 'console' event should listen early
+    this.addEventListener('console', event => {
+      if (typeof plugin.onEvent === 'function') {
+        setTimeout(() => plugin.onEvent(this, event), 0)
+      }
+    })
 
-    if (typeof plugin.onInit === 'function') {  // Only triggle once
-      plugin.onInit(this)
+    // listen 'XConsoleShow' event
+    this.addEventListener('XConsoleShow', event => {
+      if (typeof plugin.onXConsoleShow === 'function') {
+        setTimeout(() => plugin.onXConsoleShow(this), 0)
+      }
+    })
+
+    // listen 'XConsoleHide' event
+    this.addEventListener('XConsoleHide', event => {
+      if (typeof plugin.onXConsoleHide === 'function') {
+        setTimeout(() => plugin.onXConsoleHide(this), 0)
+      }
+    })
+
+    // triggle 'init' event of plugin. Only triggle once
+    if (typeof plugin.onInit === 'function') {
+      setTimeout(() => plugin.onInit(this), 0)
     }
 
+    // triggle 'ready' event of plugin. Only triggle once
     window.addEventListener('DOMContentLoaded', () => {
-      if (typeof plugin.onReady === 'function') { // Only triggle once
-        plugin.onReady(this)
+      if (typeof plugin.onReady === 'function') {
+        setTimeout(() => plugin.onReady(this), 0)
       }
     })
   }
