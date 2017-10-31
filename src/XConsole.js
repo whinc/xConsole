@@ -29,7 +29,7 @@ class XConsole {
       this.entry = document.createElement('div')
       this.entry.classList.add('entry')
       ReactDOM.render(
-        <button onClick={() => this.showPanel()}>xConsole</button>
+        <button className='button is-primary' onClick={() => this.showPanel()}>xConsole</button>
         , this.entry)
     }
     document.body.appendChild(this.entry)
