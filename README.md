@@ -1,6 +1,6 @@
 # xConsole
 
-demo: <https://whinc.github.io/xConsole>
+demo: <https://whinc.github.io/xConsole/index.html>
 
 # License
 
