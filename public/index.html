@@ -35,6 +35,24 @@
         }
         xhr.open('GET', 'https://api.github.com/users/octocat/orgs', true, 'a', 'b')
         xhr.send('hello')
+
+      }
+
+        // 测试用例2
+        // 1. onreadystatechange 在 send 之后设置
+      function sendXHR2 () {
+        var xhr = new XMLHttpRequest()
+        xhr.open('GET', 'https://api.github.com/users/whinc')
+        xhr.send('hello')
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              console.log(xhr.responseText)
+            } else {
+              console.error(xhr.statusText)
+            }
+          }
+        }
       }
 
       addEventListener('DOMContentLoaded', function () {
@@ -49,7 +67,8 @@
       You need to enable JavaScript to run this app.
     </noscript>
     <div id="root">React</div>
-    <div><button onclick="sendXHR()">Send XMLHttpRequest</button></div>
+    <div><button onclick="sendXHR()">Send XHR</button></div>
+    <div><button onclick="sendXHR2()">Send XHR 2</button></div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

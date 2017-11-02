@@ -38,44 +38,44 @@ export default class NetworkPlugin extends Plugin {
     }
 
     const hookSend = (xhr, ...args) => {
-      // 延迟 hook onreadystatechange 方法，因为用户可能在 send 调用之后设置该方法
-      setTimeout(() => {
-        const _onreadystatechange = xhr.onreadystatechange
-
-        // 这两种情况不执行 hook:
-        // 1. 未设置状态监听函数
-        // 2. 已经 hook 过
-        if (typeof _onreadystatechange !== 'function' || xhr.$isHookOnreadystatechange === true) return
-
-        xhr.onreadystatechange = function (...args) {
-          const xhr = this
-          _onreadystatechange.call(xhr, ...args)
-          hookOnreadystatechange(xhr, ...args)
-        }
-      }, 0)
-
       const [body = null] = args
       console.log('send:', body)
     }
 
     XMLHttpRequest.prototype.open = function (...args) {
       const xhr = this
-      _open.call(xhr, ...args)
-
       if (!xhr.$isHookOpen) {
         xhr.$isHookOpen = true
         hookOpen(xhr, ...args)
       }
+
+      _open.call(xhr, ...args)
     }
 
     XMLHttpRequest.prototype.send = function (...args) {
       const xhr = this
-      _send.call(xhr, ...args)
-
       // Hook once
       if (!xhr.$isHookSend) {
         xhr.$isHookSend = true
         hookSend(xhr, ...args)
+        setTimeout(() => {
+          // 延迟 hook onreadystatechange 方法，因为用户可能在 send 调用之后设置该方法
+          const _onreadystatechange = xhr.onreadystatechange
+
+          if (xhr.$isHookOnreadystatechange === true) return
+
+          xhr.onreadystatechange = function (...args) {
+            const xhr = this
+            if (typeof _onreadystatechange === 'function') {
+              _onreadystatechange.call(xhr, ...args)
+            }
+            hookOnreadystatechange(xhr, ...args)
+          }
+
+          _send.call(xhr, ...args)
+        }, 0)
+      } else {
+        _send.call(xhr, ...args)
       }
     }
   }
@@ -152,7 +152,7 @@ class NetworkPluginPanel extends React.Component {
               <div className='xc-rows__item xc-cols' key={id}>
                 <span className='xc-cols__item'>{req.url}</span>
                 <span className='xc-cols__item xc-cols__item--15 xc--text-center'>{req.method}</span>
-                <span className='xc-cols__item xc-cols__item--15 xc--text-center'>{req.status}</span>
+                <span className='xc-cols__item xc-cols__item--15 xc--text-center'>{req.status !== undefined ? req.status : '--'}</span>
               </div>
             )
           })}
