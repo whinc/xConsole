@@ -21,12 +21,35 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>React App</title>
+    <script type="text/javascript">
+      function sendXHR () {
+        var xhr = new XMLHttpRequest()
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              console.log(xhr.responseText)
+            } else {
+              console.error(xhr.statusText)
+            }
+          }
+        }
+        xhr.open('GET', 'https://api.github.com/users/octocat/orgs', true, 'a', 'b')
+        xhr.send('hello')
+      }
+
+      addEventListener('DOMContentLoaded', function () {
+        if (window.XConsole) {
+          new window.XConsole()
+        }
+      })
+    </script>
   </head>
   <body>
     <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
     <div id="root">React</div>
+    <div><button onclick="sendXHR()">Send XMLHttpRequest</button></div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

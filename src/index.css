@@ -1,0 +1,25 @@
+.xc--text-center {
+  text-align: center;
+}
+
+.xc-cols {
+  display: flex;
+  flex-direction: row;
+}
+
+.xc-cols__item {
+  flex: 1 1;
+}
+
+.xc-cols__item--15 {
+  flex: 0 1 15%;
+}
+
+.xc-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.xc-rows__item {
+  flex: 1 1;
+}
