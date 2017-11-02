@@ -27,14 +27,14 @@ export default class Tabs extends Component {
 
     return (
       <div style={{flexDirection: 'column', ...style}}>
-        <div style={{display: 'flex', flexDirection: 'row', height: '44px'}}>
+        <div style={{display: 'flex', flexDirection: 'row', height: '44px', borderBottom: '1px solid gray'}}>
           {this.getTabs().map((tab, index) => {
             const extraStyle = index !== this.getTabs().length - 1 ? {borderRight: '1px solid gray'} : {}
             return (
               <div
                 key={tab.props.value}
                 onClick={() => value !== tab.props.value && onChange(tab.props.value, value)}
-                style={{flexGrow: 1, borderBottom: '1px solid gray', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', ...extraStyle}}>
+                style={{flexGrow: 1, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', ...extraStyle}}>
                 <span>{tab.props.label}</span>
               </div>
             )
