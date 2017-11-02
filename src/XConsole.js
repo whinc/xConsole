@@ -13,8 +13,6 @@ class XConsole {
   constructor () {
     this.panel = null
     this.entry = null
-    // Hold native console object
-    this.console = this.hookConsole()
     this.eventListeners = {}
     this.plugins = []
 
@@ -75,28 +73,6 @@ class XConsole {
     this.dispatchEvent(this.createEvent('XConsoleHide'))
   }
 
-  // Hook native console methods
-  hookConsole () {
-    const console = {}
-    const names = ['log', 'info', 'error', 'warn', 'debug', 'clear']
-    names.forEach(name => {
-      console[name] = window.console[name]
-      window.console[name] = (...args) => {
-        let _level = name
-        let _args = args
-        if (name === 'clear') {
-          _level = 'system'
-          _args = ['Console was cleared']
-        }
-        this.dispatchEvent(this.createEvent('console', {level: _level, args: _args}))
-
-        // call native console method
-        console[name](...args)
-      }
-    })
-    return console
-  }
-
   getPlugins () {
     return this.plugins
   }
@@ -105,17 +81,13 @@ class XConsole {
     if (!(plugin instanceof Plugin)) {
       throw new TypeError('Invalid plugin type')
     }
-    this.plugins.push(plugin)
     this.initPlugin(plugin)
+    this.plugins.push(plugin)
   }
 
   initPlugin (plugin) {
-    // listen 'console' event. 'console' event should listen early
-    this.addEventListener('console', event => {
-      if (typeof plugin.onEvent === 'function') {
-        setTimeout(() => plugin.onEvent(this, event), 0)
-      }
-    })
+    // All plugins hold instance of xConsole
+    Object.defineProperty(plugin, 'xConsole', { value: this })
 
     // listen 'XConsoleShow' event
     this.addEventListener('XConsoleShow', event => {

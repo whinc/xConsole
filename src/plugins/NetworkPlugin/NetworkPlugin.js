@@ -10,9 +10,7 @@ export default class NetworkPlugin extends Plugin {
      * @type RequestMap
      */
     this.requestMap = {}
-  }
 
-  onInit () {
     this.hookXMLHttpRequest()
     this.hookFetch()
   }

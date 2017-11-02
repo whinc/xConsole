@@ -7,6 +7,33 @@ export default class ConsolePlugin extends Plugin {
     super(id, name)
     this.ref = null
     this.eventBuffer = []
+    // Hold native console object
+    this.console = this.hookConsole()
+  }
+
+  // Hook native console methods
+  hookConsole () {
+    const console = {}
+    const names = ['log', 'info', 'error', 'warn', 'debug', 'clear']
+    names.forEach(name => {
+      // save native console methods
+      console[name] = window.console[name]
+
+      window.console[name] = (...args) => {
+        let _level = name
+        let _args = args
+        if (name === 'clear') {
+          _level = 'system'
+          _args = ['Console was cleared']
+        }
+        const event = this.xConsole.createEvent('console', {level: _level, args: _args})
+        this.onEvent(this.xConsole, event)
+
+        // call native console method
+        console[name](...args)
+      }
+    })
+    return console
   }
 
   onEvent (xConsole, event) {
