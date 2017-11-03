@@ -10,3 +10,16 @@ export const isNull = v => v === null
 export const isUndefined = v => v === undefined
 export const isSymbol = v => typeof v === 'symbol'
 export const isObject = v => v !== null && typeof v === 'object'
+
+/**
+ * generate an uuid
+ * @returns string
+ */
+export const uuid = () => {
+  let id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    let r = Math.random() * 16 | 0
+    let v = c === 'x' ? r : (r & 0x3 | 0x8)
+    return v.toString(16)
+  })
+  return id
+}

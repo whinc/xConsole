@@ -37,12 +37,12 @@ export default class XConsoleView extends Component {
       const plugins = this.props.xConsole.getPlugins()
       // trigger 'hide' event of disactived plugin
       const disactivedPlugin = plugins.find(plugin => plugin.id === oldValue)
-      if (isFunction(disactivedPlugin.onHide)) {
+      if (disactivedPlugin && isFunction(disactivedPlugin.onHide)) {
         disactivedPlugin.onHide()
       }
       // trigger 'show' event of actived plugin
       const activedPlugin = plugins.find(plugin => plugin.id === newValue)
-      if (isFunction(activedPlugin.onShow)) {
+      if (activedPlugin && isFunction(activedPlugin.onShow)) {
         activedPlugin.onShow()
       }
     }, 0)

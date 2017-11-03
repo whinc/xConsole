@@ -1,6 +1,6 @@
 import React from 'react'
 import Plugin from '../Plugin'
-import {isFunction} from '../../utils'
+import {isFunction, uuid} from '../../utils'
 // import './NetworkPlugin.css'
 
 export default class NetworkPlugin extends Plugin {
@@ -161,20 +161,6 @@ class NetworkPluginPanel extends React.Component {
       </div>
     )
   }
-}
-
-/**
- * generate an unique id string (32)
- * @private
- * @return string
- */
-function uuid () {
-  let id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    let r = Math.random() * 16 | 0
-    let v = c === 'x' ? r : (r & 0x3 | 0x8)
-    return v.toString(16)
-  })
-  return id
 }
 
 /**
