@@ -4,6 +4,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {Tabs, Tab} from '../components'
+import {isFunction} from '../utils'
 
 export default class XConsoleView extends Component {
   static propTypes = {
@@ -36,12 +37,12 @@ export default class XConsoleView extends Component {
       const plugins = this.props.xConsole.getPlugins()
       // trigger 'hide' event of disactived plugin
       const disactivedPlugin = plugins.find(plugin => plugin.id === oldValue)
-      if (disactivedPlugin && typeof disactivedPlugin.onHide === 'function') {
+      if (isFunction(disactivedPlugin.onHide)) {
         disactivedPlugin.onHide()
       }
       // trigger 'show' event of actived plugin
       const activedPlugin = plugins.find(plugin => plugin.id === newValue)
-      if (activedPlugin && typeof activedPlugin.onShow === 'function') {
+      if (isFunction(activedPlugin.onShow)) {
         activedPlugin.onShow()
       }
     }, 0)
@@ -59,7 +60,7 @@ export default class XConsoleView extends Component {
           {xConsole.getPlugins().map((plugin) => {
             return (
               <Tab key={plugin.id} label={plugin.name} value={plugin.id} >
-                { typeof plugin.render === 'function' && plugin.render(xConsole)}
+                {isFunction(plugin.render) && plugin.render(xConsole)}
               </Tab>
             )
           })}

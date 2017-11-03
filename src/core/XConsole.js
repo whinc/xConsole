@@ -7,6 +7,7 @@ import './XConsole.css'
 import XConsoleView from './XConsoleView'
 import ConsolePlugin from '../plugins/ConsolePlugin'
 import NetworkPlugin from '../plugins/NetworkPlugin'
+import {isFunction, isObject} from '../utils'
 
 class XConsole {
   constructor () {
@@ -81,7 +82,7 @@ class XConsole {
   }
 
   addPlugin (plugin) {
-    if (!plugin || typeof plugin !== 'object') {
+    if (!isObject(plugin)) {
       throw new TypeError('Invalid plugin:' + plugin)
     }
     this.initPlugin(plugin)
@@ -94,26 +95,26 @@ class XConsole {
 
     // listen 'XConsoleShow' event
     this.addEventListener('XConsoleShow', event => {
-      if (typeof plugin.onXConsoleShow === 'function') {
+      if (isFunction(plugin.onXConsoleShow)) {
         setTimeout(() => plugin.onXConsoleShow(this), 0)
       }
     })
 
     // listen 'XConsoleHide' event
     this.addEventListener('XConsoleHide', event => {
-      if (typeof plugin.onXConsoleHide === 'function') {
+      if (isFunction(plugin.onXConsoleHide)) {
         setTimeout(() => plugin.onXConsoleHide(this), 0)
       }
     })
 
     // triggle 'init' event of plugin. Only triggle once
-    if (typeof plugin.onInit === 'function') {
+    if (isFunction(plugin.onInit)) {
       setTimeout(() => plugin.onInit(this), 0)
     }
 
     // triggle 'ready' event of plugin. Only triggle once
     window.addEventListener('DOMContentLoaded', () => {
-      if (typeof plugin.onReady === 'function') {
+      if (isFunction(plugin.onReady)) {
         setTimeout(() => plugin.onReady(this), 0)
       }
     })

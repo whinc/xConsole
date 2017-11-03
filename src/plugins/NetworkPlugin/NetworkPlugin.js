@@ -1,5 +1,6 @@
 import React from 'react'
 import Plugin from '../Plugin'
+import {isFunction} from '../../utils'
 // import './NetworkPlugin.css'
 
 export default class NetworkPlugin extends Plugin {
@@ -66,7 +67,7 @@ export default class NetworkPlugin extends Plugin {
 
           xhr.onreadystatechange = function (...args) {
             const xhr = this
-            if (typeof _onreadystatechange === 'function') {
+            if (isFunction(_onreadystatechange)) {
               _onreadystatechange.call(xhr, ...args)
             }
             hookOnreadystatechange(xhr, ...args)
