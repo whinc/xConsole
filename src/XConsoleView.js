@@ -59,7 +59,7 @@ export default class XConsoleView extends Component {
           {xConsole.getPlugins().map((plugin) => {
             return (
               <Tab key={plugin.id} label={plugin.name} value={plugin.id} >
-                {plugin.render(xConsole)}
+                { typeof plugin.render === 'function' && plugin.render(xConsole)}
               </Tab>
             )
           })}

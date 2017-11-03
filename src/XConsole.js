@@ -5,7 +5,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './XConsole.css'
 import XConsoleView from './XConsoleView'
-import Plugin from './plugins/Plugin'
 import ConsolePlugin from './plugins/ConsolePlugin'
 import NetworkPlugin from './plugins/NetworkPlugin'
 
@@ -20,6 +19,10 @@ class XConsole {
 
     this.addPlugin(new ConsolePlugin('xConsole:Console', 'Console'))
     this.addPlugin(new NetworkPlugin('xConsole:Network', 'Network'))
+    // this.addPlugin({
+    //   id: 'xConsole:Storage',
+    //   name: 'Storage'
+    // })
   }
 
   showEntry () {
@@ -78,8 +81,8 @@ class XConsole {
   }
 
   addPlugin (plugin) {
-    if (!(plugin instanceof Plugin)) {
-      throw new TypeError('Invalid plugin type')
+    if (!plugin || typeof plugin !== 'object') {
+      throw new TypeError('Invalid plugin:' + plugin)
     }
     this.initPlugin(plugin)
     this.plugins.push(plugin)
