@@ -5,8 +5,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './XConsole.css'
 import XConsoleView from './XConsoleView'
-import ConsolePlugin from './plugins/ConsolePlugin'
-import NetworkPlugin from './plugins/NetworkPlugin'
+import ConsolePlugin from '../plugins/ConsolePlugin'
+import NetworkPlugin from '../plugins/NetworkPlugin'
 
 class XConsole {
   constructor () {

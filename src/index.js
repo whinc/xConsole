@@ -1,4 +1,4 @@
-import XConsole from './XConsole'
+import XConsole from './core/XConsole'
 import './index.css'
 
 if (!window.XConsole) {

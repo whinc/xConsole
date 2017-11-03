@@ -3,7 +3,7 @@
  */
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {Tabs, Tab} from './components'
+import {Tabs, Tab} from '../components'
 
 export default class XConsoleView extends Component {
   static propTypes = {
