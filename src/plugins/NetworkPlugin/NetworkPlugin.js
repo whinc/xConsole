@@ -111,20 +111,13 @@ export default class NetworkPlugin extends Plugin {
     }
   }
 
-  onHide () {
-    super.onHide()
-    // save view state on plugin before view unmounted
-    if (this.ui) {
-      this.requestMap = this.ui.state.requestMap
-    }
-  }
-
-  render () {
+  render (props) {
     const requestMap = this.requestMap
     this.requestMap = {}
 
     return (
       <NetworkPanel
+        {...props}
         ref={ref => { this.ui = ref }}
         requestMap={requestMap}
       />

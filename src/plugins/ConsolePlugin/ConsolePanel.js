@@ -34,7 +34,11 @@ export default class ConsolePluginView extends React.Component {
   }
 
   render () {
+    const {isVisible} = this.props
     const {events, isTimestampVisible} = this.state
+
+    if (!isVisible) return null
+
     return (
       <div className='xc-console-panel'>
         {/* <div className='xc-console-panel__toolbar'>

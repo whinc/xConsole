@@ -75,7 +75,7 @@ export default class XConsoleView extends Component {
             <div className='xc-panel__content'>
               {plugins.map(plugin =>
                 <div key={plugin.id} className=''>
-                  { plugin.id === value && isFunction(plugin.render) && plugin.render()}
+                  { isFunction(plugin.render) && plugin.render({isVisible: plugin.id === value})}
                 </div>
               )}
             </div>

@@ -54,22 +54,19 @@ export default class ConsolePlugin extends Plugin {
     }
 
     // Show console event on UI
-    this.ref.setState({
-      events: [...this.ref.state.events, event]
+    this.ref.setState((preState, props) => {
+      return { events: [...preState.events, event] }
     })
   }
 
-  onHide () {
-    super.onHide()
-    if (this.ref) {
-      this.eventBuffer = this.ref.state.events
-    }
-  }
+  render (props) {
+    const eventBuffer = this.eventBuffer
+    this.eventBuffer.length = 0
 
-  render () {
     return (
       <ConsolePanel
-        eventBuffer={this.eventBuffer}
+        {...props}
+        eventBuffer={eventBuffer}
         ref={ref => (this.ref = ref)}
       />
     )
