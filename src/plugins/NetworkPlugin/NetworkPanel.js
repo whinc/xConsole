@@ -14,10 +14,7 @@ export default class NetworkPluginPanel extends React.Component {
   }
 
   render () {
-    const {isVisible} = this.props
     const {requestMap} = this.state
-
-    if (!isVisible) return null
 
     return (
       <div style={{height: '60vh'}}>

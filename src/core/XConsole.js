@@ -22,7 +22,10 @@ class XConsole {
     this.addPlugin(new NetworkPlugin('xConsole:Network', 'Network'))
     // this.addPlugin({
     //   id: 'xConsole:Storage',
-    //   name: 'Storage'
+    //   name: 'Storage',
+    //   render () {
+    //     return <p>Storage</p>
+    //   }
     // })
   }
 

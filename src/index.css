@@ -60,7 +60,18 @@
 }
 
 .xc-panel__content {
-  
+  display: flex;
+  flex-direction: column;
+  height: 60vh;
+}
+
+.xc-tab-panel {
+  position: relative;
+}
+
+.xc-tab-panel--hidden {
+  height: 0px;
+  left: -100vw;
 }
 
 .xc-tabs {

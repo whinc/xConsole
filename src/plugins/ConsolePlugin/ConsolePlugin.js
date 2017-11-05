@@ -59,13 +59,12 @@ export default class ConsolePlugin extends Plugin {
     })
   }
 
-  render (props) {
+  render () {
     const eventBuffer = this.eventBuffer
     this.eventBuffer.length = 0
 
     return (
       <ConsolePanel
-        {...props}
         eventBuffer={eventBuffer}
         ref={ref => (this.ref = ref)}
       />

@@ -23,6 +23,7 @@ export default class XConsoleView extends Component {
       // actived plugin id
       value: plugins.length > 0 ? plugins[0].id : undefined
     }
+    this.cachedPluginViews = {}
 
     // bind methods used in JSX
     this.changeTab = this.changeTab.bind(this)
@@ -34,8 +35,6 @@ export default class XConsoleView extends Component {
   }
 
   changeTab (newValue, oldValue) {
-    this.setState({ value: newValue })
-
     const plugins = this.props.plugins
     // trigger 'hide' event of disactived plugin before rerender
     const disactivedPlugin = plugins.find(plugin => plugin.id === oldValue)
@@ -47,6 +46,8 @@ export default class XConsoleView extends Component {
     if (activedPlugin && isFunction(activedPlugin.onShow)) {
       activedPlugin.onShow()
     }
+
+    this.setState({ value: newValue })
   }
 
   render () {
@@ -73,11 +74,14 @@ export default class XConsoleView extends Component {
               </div>
             </div>
             <div className='xc-panel__content'>
-              {plugins.map(plugin =>
-                <div key={plugin.id} className=''>
-                  { isFunction(plugin.render) && plugin.render({isVisible: plugin.id === value})}
-                </div>
-              )}
+              {plugins.map(plugin => {
+                let hidden = plugin.id !== value ? 'xc-tab-panel--hidden' : ''
+                return (
+                  <div key={plugin.id} className={`xc-tab-panel ${hidden}`}>
+                    {isFunction(plugin.render) && plugin.render()}
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>

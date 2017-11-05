@@ -15,8 +15,7 @@ export default class Plugin {
   }
 
   // render plugin content. return dom element.
-  // if props.isVisible is false, plugin should return null
-  render (props) {
+  render () {
     console.log(`[${this.name}]Plugin#render() called`)
     return null
   }

@@ -111,17 +111,17 @@ export default class NetworkPlugin extends Plugin {
     }
   }
 
-  render (props) {
+  render () {
     const requestMap = this.requestMap
     this.requestMap = {}
 
-    return (
+    const r = (
       <NetworkPanel
-        {...props}
         ref={ref => { this.ui = ref }}
         requestMap={requestMap}
       />
     )
+    return r
   }
 }
 
