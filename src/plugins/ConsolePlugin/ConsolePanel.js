@@ -33,14 +33,20 @@ export default class ConsolePluginView extends React.Component {
     return align(d.getHours()) + ':' + align(d.getMinutes()) + ':' + align(d.getSeconds()) + '.' + align(d.getMilliseconds(), 3)
   }
 
+  onClickClear () {
+    this.setState({
+      events: []
+    })
+  }
+
   render () {
     const {events, isTimestampVisible} = this.state
 
     return (
       <div className='xc-console-panel'>
-        {/* <div className='xc-console-panel__toolbar'>
-          <span>clear</span>
-        </div> */}
+        <div className='xc-console-panel__toolbar'>
+          <span onClick={() => this.onClickClear()}>clear</span>
+        </div>
         <div className='xc-console-panel__content'>
           {events.map((event, index) => {
             const { detail: { timestamp, level, args } } = event

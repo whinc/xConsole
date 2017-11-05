@@ -23,7 +23,7 @@ export default class ConsolePlugin extends Plugin {
         let _level = name
         let _args = args
         if (name === 'clear') {
-          _level = 'system'
+          _level = 'clear'
           _args = ['Console was cleared']
         }
         const event = this.xConsole.createEvent('console', {level: _level, args: _args})
@@ -46,11 +46,13 @@ export default class ConsolePlugin extends Plugin {
       return
     }
 
-    // Handle 'console.clear()' event
-    if (event.detail && event.detail.level === 'system') {
-      this.eventBuffer.length = 0
-      this.ref.setState({ events: [event] })
-      return
+    event.detail = event.detail || {}
+    switch (event.detail.level) {
+      // 'console.clear()' event
+      case 'clear':
+        this.eventBuffer.length = 0
+        this.ref.setState({ events: [event] })
+        return
     }
 
     // Show console event on UI

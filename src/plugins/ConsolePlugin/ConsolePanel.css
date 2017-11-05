@@ -11,6 +11,13 @@
   font-style: italic;
  }
 
+.msg-box.clear{
+  color: gray;
+  border-color: #FFF;
+  background-color: #FFF;
+  font-style: italic;
+ }
+
 .msg-box .timestamp {
   color: gray;
   font-style: normal;
