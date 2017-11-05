@@ -27,7 +27,7 @@ export default class ConsolePlugin extends Plugin {
           _args = ['Console was cleared']
         }
         const event = this.xConsole.createEvent('console', {level: _level, args: _args})
-        this.onEvent(this.xConsole, event)
+        this.onEvent(event)
 
         // call native console method
         console[name](...args)
@@ -36,7 +36,7 @@ export default class ConsolePlugin extends Plugin {
     return console
   }
 
-  onEvent (xConsole, event) {
+  onEvent (event) {
     // Only focus on console event
     if (!event || event.type !== 'console') return
 
@@ -60,12 +60,13 @@ export default class ConsolePlugin extends Plugin {
   }
 
   onHide () {
+    super.onHide()
     if (this.ref) {
       this.eventBuffer = this.ref.state.events
     }
   }
 
-  render (xConsole) {
+  render () {
     return (
       <ConsolePanel
         eventBuffer={this.eventBuffer}

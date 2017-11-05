@@ -15,12 +15,12 @@ export default class Plugin {
   }
 
   // render plugin content. return dom element.
-  render (xConsole) {
+  render () {
     console.log(`[${this.name}]Plugin#render() called`)
     return null
   }
 
-  onEvent (xConsole, event) {
+  onEvent (event) {
     // if (typeof event !== 'object') {
     //   return
     // }
@@ -36,14 +36,14 @@ export default class Plugin {
   // Trigger before starting to initialize a plugin.
   // This event will only be trigger once.
   // Note that plugin's DOM is not ready now.
-  onInit (xConsole) {
+  onInit () {
     console.log(`[${this.name}Plugin] onInit() called`)
   }
 
   // Trigger when all initialization is finished.
   // This event will only be triggered once.
   // Now plugin is installed and it's DOM is ready.
-  onReady (xConsole) {
+  onReady () {
     console.log(`[${this.name}Plugin] onReady() called`)
   }
 

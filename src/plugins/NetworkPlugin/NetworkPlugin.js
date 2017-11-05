@@ -119,7 +119,7 @@ export default class NetworkPlugin extends Plugin {
     }
   }
 
-  render (xConsole) {
+  render () {
     const requestMap = this.requestMap
     this.requestMap = {}
 

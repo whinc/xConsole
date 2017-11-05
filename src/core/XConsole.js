@@ -48,7 +48,10 @@ class XConsole {
       this.panel = document.createElement('div')
       this.panel.classList.add('panel')
       ReactDOM.render(
-        <XConsoleView xConsole={this} onClose={() => this.hidePanel()} />
+        <XConsoleView
+          plugins={this.getPlugins()}
+          onClose={() => this.hidePanel()}
+        />
         , this.panel)
     }
     // mask animation
