@@ -51,20 +51,21 @@ export default class XConsoleView extends Component {
   render () {
     const {xConsole, onClose} = this.props
     return (
-      <div style={{display: 'flex', flexGrow: 1, flexDirection: 'column'}}>
-        <div style={{ height: '40vh' }} onClick={onClose} />
-        <Tabs
-          style={{ flexGrow: 1, backgroundColor: 'white' }}
-          value={this.state.value}
-          onChange={this.changeTab}>
-          {xConsole.getPlugins().map((plugin) => {
-            return (
-              <Tab key={plugin.id} label={plugin.name} value={plugin.id} >
-                {isFunction(plugin.render) && plugin.render(xConsole)}
-              </Tab>
-            )
-          })}
-        </Tabs>
+      <div className='xc-container'>
+        <div className='xc-container__mask' onClick={onClose} />
+        <div className='xc-container__content'>
+          <Tabs
+            value={this.state.value}
+            onChange={this.changeTab}>
+            {xConsole.getPlugins().map((plugin) => {
+              return (
+                <Tab key={plugin.id} label={plugin.name} value={plugin.id} >
+                  {isFunction(plugin.render) && plugin.render(xConsole)}
+                </Tab>
+              )
+            })}
+          </Tabs>
+        </div>
       </div>
     )
   }

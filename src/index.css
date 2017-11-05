@@ -2,6 +2,8 @@
   text-align: center;
 }
 
+/* Layout */
+
 .xc-cols {
   display: flex;
   flex-direction: row;
@@ -23,3 +25,21 @@
 .xc-rows__item {
   flex: 1 1;
 }
+
+/* XConsole */
+
+.xc-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.xc-container__mask {
+  height: 40vh;
+}
+
+.xc-container__content {
+  flex: 1;
+  background-color: white;
+}
+
