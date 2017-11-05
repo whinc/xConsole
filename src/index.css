@@ -2,11 +2,18 @@
   text-align: center;
 }
 
+
 /* Layout */
 
 .xc-cols {
   display: flex;
   flex-direction: row;
+}
+
+.xc-cols--center {
+  justify-content: center;
+  align-items: center;
+  align-content: center;
 }
 
 .xc-cols__item {
@@ -43,3 +50,31 @@
   background-color: white;
 }
 
+.xc-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.xc-panel__header {
+  height: 44px;
+}
+
+.xc-panel__content {
+  
+}
+
+.xc-tabs {
+  height: 100%;
+  display: flex;
+  border-bottom: 1px solid silver;
+  box-sizing: border-box;
+}
+
+.xc-tabs__tab {
+  flex: 1 1;
+  border-right: 1px solid silver;
+}
+
+.xc-tabs__tab--noborder {
+  border-right: initial;
+}

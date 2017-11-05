@@ -59,6 +59,12 @@ export default class ConsolePlugin extends Plugin {
     })
   }
 
+  onHide () {
+    if (this.ref) {
+      this.eventBuffer = this.ref.state.events
+    }
+  }
+
   render (xConsole) {
     return (
       <ConsolePanel

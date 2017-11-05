@@ -36,18 +36,23 @@ export default class ConsolePluginView extends React.Component {
   render () {
     const {events, isTimestampVisible} = this.state
     return (
-      <div>
-        {events.map((event, index) => {
-          const { detail: { timestamp, level, args } } = event
-          return (
-            <div key={index} className={`msg-box ${level}`}>
-              {isTimestampVisible && <span className={'timestamp'}>{this.formatDate(timestamp)}</span>}
-              {' '}
-              <span>{args.join('')}</span>
+      <div className='xc-console-panel'>
+        {/* <div className='xc-console-panel__toolbar'>
+          <span>clear</span>
+        </div> */}
+        <div className='xc-console-panel__content'>
+          {events.map((event, index) => {
+            const { detail: { timestamp, level, args } } = event
+            return (
+              <div key={index} className={`msg-box ${level}`}>
+                {isTimestampVisible && <span className={'timestamp'}>{this.formatDate(timestamp)}</span>}
+                {' '}
+                <span>{args.join('')}</span>
 
-            </div>
-          )
-        })}
+              </div>
+            )
+          })}
+        </div>
       </div>
     )
   }

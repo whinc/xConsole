@@ -17,7 +17,7 @@ export default class NetworkPluginPanel extends React.Component {
     const {requestMap} = this.state
 
     return (
-      <div style={{height: '100%'}}>
+      <div style={{height: '60vh'}}>
         <div className='xcui-rows'>
           <div className='xc-rows__item xc-cols'>
             <span className='xc-cols__item xc--text-center'>Name</span>

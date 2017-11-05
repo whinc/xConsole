@@ -51,12 +51,12 @@ export default class Plugin {
     // this.print('onRemove() called')
   }
 
-  // on plugin tab became visible
+  // Plugin is going to be shown
   onShow () {
     console.log(`[${this.name}Plugin] onShow() called`)
   }
 
-  // on plugin tab became invisible
+  // Plugin is going to be hidden
   onHide () {
     console.log(`[${this.name}Plugin] onHide() called`)
   }
