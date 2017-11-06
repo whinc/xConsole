@@ -62,6 +62,11 @@
 .xc-console-panel__toolbar {
   flex: 0 0 25px;
   border-bottom: 1px solid silver;
+  align-items: center;
+}
+
+.xc-console-panel__clear {
+  padding: 5px;
 }
 
 .xc-console-panel__content {

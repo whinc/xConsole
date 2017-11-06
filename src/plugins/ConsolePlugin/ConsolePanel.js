@@ -45,7 +45,7 @@ export default class ConsolePluginView extends React.Component {
     return (
       <div className='xc-console-panel'>
         <div className='xc-console-panel__toolbar'>
-          <span onClick={() => this.onClickClear()}>clear</span>
+          <span onClick={() => this.onClickClear()} className='fa fa-ban xc-console-panel__clear' />
         </div>
         <div className='xc-console-panel__content'>
           {events.map((event, index) => {
