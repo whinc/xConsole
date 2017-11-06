@@ -23,7 +23,6 @@ export default class XConsoleView extends Component {
       // actived plugin id
       value: plugins.length > 0 ? plugins[0].id : undefined
     }
-    this.cachedPluginViews = {}
 
     // bind methods used in JSX
     this.changeTab = this.changeTab.bind(this)
