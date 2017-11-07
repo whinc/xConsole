@@ -12,16 +12,16 @@ import {isFunction, isObject} from '../utils'
 
 class XConsole {
   constructor () {
-    this.panel = null
-    this.entry = null
-    this.plugins = []
+    this._panel = null
+    this._entry = null
+    this._plugins = []
     this._emitter = new Emitter()
   }
 
   init () {
-    this.showEntry()
-    this.addPlugin(new ConsolePlugin('xConsole:Console', 'Console'))
-    this.addPlugin(new NetworkPlugin('xConsole:Network', 'Network'))
+    this._showEntry()
+    this._addPlugin(new ConsolePlugin('xConsole:Console', 'Console'))
+    this._addPlugin(new NetworkPlugin('xConsole:Network', 'Network'))
     // this.addPlugin({
     //   id: 'xConsole:Storage',
     //   name: 'Storage',
@@ -31,73 +31,95 @@ class XConsole {
     // })
   }
 
-  showEntry () {
-    if (!this.entry) {
-      this.entry = document.createElement('div')
-      this.entry.classList.add('entry')
+  /**
+   * Registers a handler to be invoked whenever the given event is emitted.
+   * @param {string} eventName - Consisits of namespace and name, e.g. 'namespace:name'.
+   *                             If either part consists of multiple words, these must be separated by hyphens.
+   * @param {function} handler
+   * @returns {Disposable}
+   */
+  on (eventName, handler) {
+    this._emitter.on(eventName, handler)
+  }
+
+  /**
+   * Invoke handlers registered via Emitter#on() for the given event name.
+   * @param {string} eventName
+   * @param {any=} value
+   * @returns {void}
+   */
+  emit (eventName, value = {}) {
+    if (isObject(value)) {
+      Object.assign(value, {
+        timestamp: Date.now()
+      })
+    }
+    this._emitter.emit(eventName, value)
+  }
+
+  _showEntry () {
+    if (!this._entry) {
+      this._entry = document.createElement('div')
+      this._entry.classList.add('entry')
       ReactDOM.render(
-        <button onClick={() => this.showPanel()}>xConsole</button>
-        , this.entry)
+        <button onClick={() => this._showPanel()}>xConsole</button>
+        , this._entry)
     }
-    document.body.appendChild(this.entry)
+    document.body.appendChild(this._entry)
   }
 
-  hideEntry () {
-    if (this.entry) {
-      document.body.removeChild(this.entry)
+  _hideEntry () {
+    if (this._entry) {
+      document.body.removeChild(this._entry)
     }
   }
 
-  showPanel () {
-    if (!this.panel) {
-      this.panel = document.createElement('div')
-      this.panel.classList.add('panel')
+  _showPanel () {
+    if (!this._panel) {
+      this._panel = document.createElement('div')
+      this._panel.classList.add('panel')
       ReactDOM.render(
         <XConsoleView
-          plugins={this.getPlugins()}
-          onClose={() => this.hidePanel()}
+          plugins={this._plugins}
+          onClose={() => this._hidePanel()}
         />
-        , this.panel)
+        , this._panel)
     }
     // mask animation
-    this.panel.classList.add('animated', 'fadeIn')
-    this.panel.classList.remove('fadeOut')
+    this._panel.classList.add('animated', 'fadeIn')
+    this._panel.classList.remove('fadeOut')
     // panel animation
-    this.panel.firstElementChild.classList.add('animated', 'slideInUp')
-    this.panel.firstElementChild.classList.remove('slideOutDown')
-    document.body.appendChild(this.panel)
+    this._panel.firstElementChild.classList.add('animated', 'slideInUp')
+    this._panel.firstElementChild.classList.remove('slideOutDown')
+    document.body.appendChild(this._panel)
 
     this.emit('xconsole:show')
   }
 
-  hidePanel () {
-    if (this.panel) {
+  _hidePanel () {
+    if (this._panel) {
       // mask animation
-      this.panel.firstElementChild.classList.remove('slideInUp')
-      this.panel.firstElementChild.classList.add('slideOutDown')
-      this.panel.classList.remove('fadeIn')
-      this.panel.classList.add('fadeOut')
+      this._panel.firstElementChild.classList.remove('slideInUp')
+      this._panel.firstElementChild.classList.add('slideOutDown')
+      this._panel.classList.remove('fadeIn')
+      this._panel.classList.add('fadeOut')
       setTimeout(() => {
-        document.body.removeChild(this.panel)
+        document.body.removeChild(this._panel)
       }, 500)
     }
 
     this.emit('xconsole:hide')
   }
 
-  getPlugins () {
-    return this.plugins
-  }
-
-  addPlugin (plugin) {
+  _addPlugin (plugin) {
     if (!isObject(plugin)) {
       throw new TypeError('Invalid plugin:' + plugin)
     }
-    this.initPlugin(plugin)
-    this.plugins.push(plugin)
+    this._initPlugin(plugin)
+    this._plugins.push(plugin)
   }
 
-  initPlugin (plugin) {
+  _initPlugin (plugin) {
     // All plugins hold instance of xConsole
     Object.defineProperty(plugin, 'xConsole', { value: this })
 
@@ -126,32 +148,6 @@ class XConsole {
         setTimeout(() => plugin.onReady(this), 0)
       }
     })
-  }
-
-  /**
-   * Registers a handler to be invoked whenever the given event is emitted.
-   * @param {string} eventName - Consisits of namespace and name, e.g. 'namespace:name'.
-   *                             If either part consists of multiple words, these must be separated by hyphens.
-   * @param {function} handler
-   * @returns {Disposable}
-   */
-  on (eventName, handler) {
-    this._emitter.on(eventName, handler)
-  }
-
-  /**
-   * Invoke handlers registered via Emitter#on() for the given event name.
-   * @param {string} eventName
-   * @param {any=} value
-   * @returns {void}
-   */
-  emit (eventName, value = {}) {
-    if (isObject(value)) {
-      Object.assign(value, {
-        timestamp: Date.now()
-      })
-    }
-    this._emitter.emit(eventName, value)
   }
 }
 
