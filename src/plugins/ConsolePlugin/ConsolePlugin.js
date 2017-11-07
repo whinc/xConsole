@@ -7,6 +7,9 @@ export default class ConsolePlugin extends Plugin {
     super(id, name)
     this.ref = null
     this.eventBuffer = []
+  }
+
+  onInit () {
     // Hold native console object
     this.console = this.hookConsole()
   }
