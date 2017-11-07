@@ -20,19 +20,6 @@ export default class Plugin {
     return null
   }
 
-  onEvent (event) {
-    // if (typeof event !== 'object') {
-    //   return
-    // }
-
-    // const methodName = 'on' + event.type[0].toUpperCase() + event.type.substr(1)
-    // if (typeof this[methodName] === 'function') {
-    //   this[methodName](event, xConsole)
-    // } else {
-    //   // this.print('onEvent() called')
-    // }
-  }
-
   // Trigger before starting to initialize a plugin.
   // This event will only be trigger once.
   // Note that plugin's DOM is not ready now.

@@ -58,6 +58,17 @@
       addEventListener('DOMContentLoaded', function () {
         if (window.xConsole) {
           xConsole.init()
+          // console plugin test code
+          console.log('test log')
+          console.info('test info')
+          console.warn('test warn')
+          console.error('test error')
+          console.debug('test debug')
+          xConsole.commands.dispatch('console:log', {texts: ['dispatch command log']})
+          xConsole.commands.dispatch('console:info', {texts: ['dispatch command info']})
+          xConsole.commands.dispatch('console:warn', {texts: ['dispatch command warn']})
+          xConsole.commands.dispatch('console:error', {texts: ['dispatch command error']})
+          xConsole.commands.dispatch('console:debug', {texts: ['dispatch command debug']})
         }
       })
     </script>

@@ -1,23 +1,20 @@
 import React from 'react'
 import './ConsolePanel.css'
 
-export default class ConsolePluginView extends React.Component {
-  constructor () {
-    super(...arguments)
+export default class ConsolePanel extends React.Component {
+  constructor (props) {
+    super(props)
     this.state = {
-      events: [],
+      messages: [],
       isTimestampVisible: true,
       logLevel: LogLevel.ALL
     }
   }
 
   componentDidMount () {
-    const {eventBuffer} = this.props
-    if (eventBuffer.length > 0) {
-      this.setState({
-        events: [...this.state.events, ...eventBuffer]
-      })
-      eventBuffer.length = 0
+    const {messages = []} = this.props
+    if (messages.length > 0) {
+      this.setState({ messages })
     }
   }
 
@@ -34,9 +31,9 @@ export default class ConsolePluginView extends React.Component {
     return align(d.getHours()) + ':' + align(d.getMinutes()) + ':' + align(d.getSeconds()) + '.' + align(d.getMilliseconds(), 3)
   }
 
-  onClickClear () {
+  clearMessages () {
     this.setState({
-      events: []
+      messages: []
     })
   }
 
@@ -47,28 +44,30 @@ export default class ConsolePluginView extends React.Component {
   }
 
   render () {
-    const {events, isTimestampVisible, logLevel} = this.state
+    const {messages, isTimestampVisible, logLevel} = this.state
 
-    let filteredEvents = events.filter(event => new RegExp(event.detail.level).test(logLevel))
+    let _messages = messages.filter(msg => new RegExp(msg.level).test(logLevel))
 
     return (
       <div className='xc-console-panel'>
         <div className='xc-console-panel__toolbar'>
-          <span onClick={() => this.onClickClear()} className='fa fa-ban xc-console-panel__clear' />
+          <span onClick={() => this.clearMessages()} className='fa fa-ban xc-console-panel__clear' />
           <select value={logLevel} onChange={event => this.onChangeLogLevel(event.target.value)}>
             <option value={LogLevel.ALL}>All</option>
             <option value={LogLevel.LOG}>Log</option>
             <option value={LogLevel.ERROR}>Error</option>
+            <option value={LogLevel.INFO}>Info</option>
+            <option value={LogLevel.WARN}>Warn</option>
+            <option value={LogLevel.DEBUG}>Debug</option>
           </select>
         </div>
         <div className='xc-console-panel__content'>
-          {filteredEvents.map((event, index) => {
-            const { detail: { timestamp, level, args } } = event
+          {_messages.map(msg => {
             return (
-              <div key={index} className={`msg-box ${level}`}>
-                {isTimestampVisible && <span className={'timestamp'}>{this.formatDate(timestamp)}</span>}
+              <div key={msg.id} className={`msg-box ${msg.level}`}>
+                {isTimestampVisible && <span className={'timestamp'}>{this.formatDate(msg.timestamp)}</span>}
                 {' '}
-                <span>{args.join('')}</span>
+                <span>{msg.texts.join(' ')}</span>
 
               </div>
             )

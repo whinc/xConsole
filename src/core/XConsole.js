@@ -9,6 +9,7 @@ import XConsoleView from './XConsoleView'
 import ConsolePlugin from '../plugins/ConsolePlugin'
 import NetworkPlugin from '../plugins/NetworkPlugin'
 import {isFunction, isObject} from '../utils'
+import CommandRegistry from './CommandRegistry'
 
 class XConsole {
   constructor () {
@@ -16,6 +17,10 @@ class XConsole {
     this._entry = null
     this._plugins = []
     this._emitter = new Emitter()
+  }
+
+  get commands () {
+    return this._commands || (this._commands = new CommandRegistry())
   }
 
   init () {
@@ -126,26 +131,26 @@ class XConsole {
     // listen 'XConsoleShow' event
     this.on('xconsole:show', () => {
       if (isFunction(plugin.onXConsoleShow)) {
-        setTimeout(() => plugin.onXConsoleShow(this), 0)
+        plugin.onXConsoleShow(this)
       }
     })
 
     // listen 'XConsoleHide' event
     this.on('xconsole:show', () => {
       if (isFunction(plugin.onXConsoleHide)) {
-        setTimeout(() => plugin.onXConsoleHide(this), 0)
+        plugin.onXConsoleHide(this)
       }
     })
 
     // triggle 'init' event of plugin. Only triggle once
     if (isFunction(plugin.onInit)) {
-      setTimeout(() => plugin.onInit(this), 0)
+      plugin.onInit(this)
     }
 
     // triggle 'ready' event of plugin. Only triggle once
     window.addEventListener('DOMContentLoaded', () => {
       if (isFunction(plugin.onReady)) {
-        setTimeout(() => plugin.onReady(this), 0)
+        plugin.onReady(this)
       }
     })
   }

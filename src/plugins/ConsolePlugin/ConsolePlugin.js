@@ -2,20 +2,88 @@ import React from 'react'
 import Plugin from '../Plugin'
 import ConsolePanel from './ConsolePanel'
 
+/**
+ * Display messages from console.
+ *
+ * Supported methods of console:
+ * * log
+ * * info
+ * * warn
+ * * error
+ * * debug
+ * * clear
+ *
+ * Supported commands:
+ * * 'console:log'
+ * * 'console:info'
+ * * 'console:warn'
+ * * 'console:error'
+ * * 'console:debug'
+ * * 'console:clear'
+ *
+ * Example:
+ * window.xConsole.commands.dispatch('console:warn', {texts: ['hello']})
+ */
 export default class ConsolePlugin extends Plugin {
   constructor (id, name) {
     super(id, name)
     this.ref = null
     this.eventBuffer = []
+    // cache messages before consumed by ConsolePanel
+    this._messages = []
   }
 
   onInit () {
     // Hold native console object
-    this.console = this.hookConsole()
+    this._nativeConsole = this._hookConsole()
+
+    // register commands
+    window.xConsole.commands.add('console:log', value => this._handleCommandPrint('log', value))
+    window.xConsole.commands.add('console:info', value => this._handleCommandPrint('info', value))
+    window.xConsole.commands.add('console:warn', value => this._handleCommandPrint('warn', value))
+    window.xConsole.commands.add('console:error', value => this._handleCommandPrint('error', value))
+    window.xConsole.commands.add('console:debug', value => this._handleCommandPrint('debug', value))
+    window.xConsole.commands.add('console:clear', value => this._handleCommandClear(value))
   }
 
-  // Hook native console methods
-  hookConsole () {
+  _genId () {
+    return (typeof this._messageId === 'number')
+      ? (++this._messageId)
+      : (this._messageId = 1)
+  }
+
+  _handleCommandClear (value) {
+    if (this.ref) {
+      this.ref.clearMessages()
+    } else {
+      this._clearMessages()
+    }
+  }
+
+  _handleCommandPrint (level, value) {
+    const { texts = [], timestamp = Date.now() } = value || {}
+
+    const message = {
+      id: this._genId(),
+      timestamp,
+      texts,
+      level
+    }
+
+    if (this.ref) {
+      // Show console event on UI
+      this.ref.setState((preState, props) => {
+        return { messages: [...preState.messages, message] }
+      })
+    } else {
+      this._messages.push(message)
+    }
+  }
+
+  // Hook native console methods. It does two things:
+  // 1. call native mathods
+  // 2. dispatch console event to ConsolePanel
+  _hookConsole () {
     const console = {}
     const methodNames = ['log', 'info', 'error', 'warn', 'debug', 'clear']
     methodNames.forEach(name => {
@@ -24,41 +92,7 @@ export default class ConsolePlugin extends Plugin {
 
       // hook console methods
       window.console[name] = (...args) => {
-        let event
-        switch (name) {
-          case 'log':
-          case 'info':
-          case 'error':
-          case 'warn':
-          case 'debug':
-            event = {
-              type: 'console',
-              detail: {
-                level: name,
-                args,
-                timestamp: Date.now()
-              }
-            }
-            break
-          case 'clear':
-            event = {
-              type: 'console',
-              detail: {
-                level: name,
-                args: ['Console was cleared'],
-                timestamp: Date.now()
-              }
-            }
-            break
-          default:
-            event = null
-            break
-        }
-
-        // trigger event if it's not null
-        if (event) {
-          this.onEvent(event)
-        }
+        this._handleCommandPrint(name, { texts: args })
 
         // call native console method
         console[name](...args)
@@ -67,38 +101,20 @@ export default class ConsolePlugin extends Plugin {
     return console
   }
 
-  onEvent (event) {
-    // Only focus on console event
-    if (!event || event.type !== 'console') return
+  _clearMessages () {
+    this._messages.length = 0
+  }
 
-    // Save console event data before plugin mounted
-    if (!this.ref) {
-      this.eventBuffer.push(event)
-      return
-    }
-
-    event.detail = event.detail || {}
-    switch (event.detail.level) {
-      case 'clear':
-        this.eventBuffer.length = 0
-        this.ref.setState({ events: [event] })
-        return
-      default: break
-    }
-
-    // Show console event on UI
-    this.ref.setState((preState, props) => {
-      return { events: [...preState.events, event] }
-    })
+  _getAndClearMessages () {
+    const messages = [...this._messages]
+    this._messages.length = 0
+    return messages
   }
 
   render () {
-    const eventBuffer = this.eventBuffer
-    this.eventBuffer.length = 0
-
     return (
       <ConsolePanel
-        eventBuffer={eventBuffer}
+        messages={this._getAndClearMessages()}
         ref={ref => (this.ref = ref)}
       />
     )
