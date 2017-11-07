@@ -15,9 +15,10 @@ class XConsole {
     this.entry = null
     this.eventListeners = {}
     this.plugins = []
+  }
 
+  init () {
     this.showEntry()
-
     this.addPlugin(new ConsolePlugin('xConsole:Console', 'Console'))
     this.addPlugin(new NetworkPlugin('xConsole:Network', 'Network'))
     // this.addPlugin({
@@ -157,4 +158,4 @@ class XConsole {
   }
 }
 
-export default XConsole
+export default new XConsole()
