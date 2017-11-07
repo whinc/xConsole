@@ -6,7 +6,8 @@ export default class ConsolePluginView extends React.Component {
     super(...arguments)
     this.state = {
       events: [],
-      isTimestampVisible: true
+      isTimestampVisible: true,
+      logLevel: LogLevel.ALL
     }
   }
 
@@ -39,16 +40,29 @@ export default class ConsolePluginView extends React.Component {
     })
   }
 
+  onChangeLogLevel (newLogLevel) {
+    this.setState({
+      logLevel: newLogLevel
+    })
+  }
+
   render () {
-    const {events, isTimestampVisible} = this.state
+    const {events, isTimestampVisible, logLevel} = this.state
+
+    let filteredEvents = events.filter(event => new RegExp(event.detail.level).test(logLevel))
 
     return (
       <div className='xc-console-panel'>
         <div className='xc-console-panel__toolbar'>
           <span onClick={() => this.onClickClear()} className='fa fa-ban xc-console-panel__clear' />
+          <select value={logLevel} onChange={event => this.onChangeLogLevel(event.target.value)}>
+            <option value={LogLevel.ALL}>All</option>
+            <option value={LogLevel.LOG}>Log</option>
+            <option value={LogLevel.ERROR}>Error</option>
+          </select>
         </div>
         <div className='xc-console-panel__content'>
-          {events.map((event, index) => {
+          {filteredEvents.map((event, index) => {
             const { detail: { timestamp, level, args } } = event
             return (
               <div key={index} className={`msg-box ${level}`}>
@@ -63,4 +77,13 @@ export default class ConsolePluginView extends React.Component {
       </div>
     )
   }
+}
+
+const LogLevel = {
+  ALL: 'log info warn error debug',
+  LOG: 'log',
+  INFO: 'info',
+  WARN: 'warn',
+  ERROR: 'error',
+  DEBUG: 'debug'
 }

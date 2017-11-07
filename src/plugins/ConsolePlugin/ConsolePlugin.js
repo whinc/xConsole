@@ -68,11 +68,11 @@ export default class ConsolePlugin extends Plugin {
 
     event.detail = event.detail || {}
     switch (event.detail.level) {
-      // 'console.clear()' event
       case 'clear':
         this.eventBuffer.length = 0
         this.ref.setState({ events: [event] })
         return
+      default: break
     }
 
     // Show console event on UI
