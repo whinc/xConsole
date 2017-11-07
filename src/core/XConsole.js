@@ -3,6 +3,7 @@
  */
 import React from 'react'
 import ReactDOM from 'react-dom'
+import {Emitter} from 'event-kit'
 import './XConsole.css'
 import XConsoleView from './XConsoleView'
 import ConsolePlugin from '../plugins/ConsolePlugin'
@@ -13,8 +14,8 @@ class XConsole {
   constructor () {
     this.panel = null
     this.entry = null
-    this.eventListeners = {}
     this.plugins = []
+    this._emitter = new Emitter()
   }
 
   init () {
@@ -66,7 +67,7 @@ class XConsole {
     this.panel.firstElementChild.classList.remove('slideOutDown')
     document.body.appendChild(this.panel)
 
-    this.dispatchEvent(this.createEvent('XConsoleShow'))
+    this.emit('xconsole:show')
   }
 
   hidePanel () {
@@ -81,7 +82,7 @@ class XConsole {
       }, 500)
     }
 
-    this.dispatchEvent(this.createEvent('XConsoleHide'))
+    this.emit('xconsole:hide')
   }
 
   getPlugins () {
@@ -101,14 +102,14 @@ class XConsole {
     Object.defineProperty(plugin, 'xConsole', { value: this })
 
     // listen 'XConsoleShow' event
-    this.addEventListener('XConsoleShow', event => {
+    this.on('xconsole:show', () => {
       if (isFunction(plugin.onXConsoleShow)) {
         setTimeout(() => plugin.onXConsoleShow(this), 0)
       }
     })
 
     // listen 'XConsoleHide' event
-    this.addEventListener('XConsoleHide', event => {
+    this.on('xconsole:show', () => {
       if (isFunction(plugin.onXConsoleHide)) {
         setTimeout(() => plugin.onXConsoleHide(this), 0)
       }
@@ -127,34 +128,30 @@ class XConsole {
     })
   }
 
-  addEventListener (eventType, handler) {
-    if (!this.eventListeners[eventType]) {
-      this.eventListeners[eventType] = []
-    }
-    this.eventListeners[eventType].push(handler)
+  /**
+   * Registers a handler to be invoked whenever the given event is emitted.
+   * @param {string} eventName - Consisits of namespace and name, e.g. 'namespace:name'.
+   *                             If either part consists of multiple words, these must be separated by hyphens.
+   * @param {function} handler
+   * @returns {Disposable}
+   */
+  on (eventName, handler) {
+    this._emitter.on(eventName, handler)
   }
 
-  removeEventListener (eventType, hander) {
-    if (this.eventListeners[eventType]) {
-      const foundIndex = this.eventListeners[eventType].findIndex(v => v === hander)
-      this.eventListeners[eventType].splice(foundIndex, 1)
-    }
-  }
-
-  dispatchEvent (event) {
-    if (this.eventListeners[event.type]) {
-      this.eventListeners[event.type].forEach(handler => handler(event))
-    }
-  }
-
-  createEvent (type, detail) {
-    return {
-      type: type,
-      detail: {
-        ...detail,
+  /**
+   * Invoke handlers registered via Emitter#on() for the given event name.
+   * @param {string} eventName
+   * @param {any=} value
+   * @returns {void}
+   */
+  emit (eventName, value = {}) {
+    if (isObject(value)) {
+      Object.assign(value, {
         timestamp: Date.now()
-      }
+      })
     }
+    this._emitter.emit(eventName, value)
   }
 }
 

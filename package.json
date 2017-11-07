@@ -12,6 +12,7 @@
   "author": "whincwu",
   "license": "MIT",
   "dependencies": {
+    "event-kit": "^2.4.0",
     "font-awesome": "^4.7.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
@@ -42,7 +43,8 @@
     "global": [
       "fetch",
       "URL",
-      "it"
+      "it",
+      "xConsole"
     ]
   },
   "config": {

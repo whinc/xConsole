@@ -28,16 +28,24 @@ export default class ConsolePlugin extends Plugin {
           case 'error':
           case 'warn':
           case 'debug':
-            event = this.xConsole.createEvent('console', {
-              level: name,
-              args
-            })
+            event = {
+              type: 'console',
+              detail: {
+                level: name,
+                args,
+                timestamp: Date.now()
+              }
+            }
             break
           case 'clear':
-            event = this.xConsole.createEvent('console', {
-              level: name,
-              args: ['Console was cleared']
-            })
+            event = {
+              type: 'console',
+              detail: {
+                level: name,
+                args: ['Console was cleared'],
+                timestamp: Date.now()
+              }
+            }
             break
           default:
             event = null
