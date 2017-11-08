@@ -10,13 +10,32 @@ import ConsolePlugin from '../plugins/ConsolePlugin'
 import NetworkPlugin from '../plugins/NetworkPlugin'
 import {isFunction, isObject} from '../utils'
 import CommandRegistry from './CommandRegistry'
+import PluginManager from './PluginManager'
 
+/**
+ * Display xConsole panel
+ *
+ * Supported commands:
+ * * 'xconsole:show'
+ * * 'xconsole:hide'
+ */
 class XConsole {
   constructor () {
+    this._isInit = false
+    this._isDOMContentLoaded = false
     this._panel = null
     this._entry = null
-    this._plugins = []
     this._emitter = new Emitter()
+
+    // Listen page event before xConsole initialize to avoid miss event
+    window.document.addEventListener('DOMContentLoaded', event => {
+      this._isDOMContentLoaded = true
+      this.emit('xconsole:ready', event)
+    })
+  }
+
+  get plugins () {
+    return this._plugins || (this._plugins = new PluginManager())
   }
 
   get commands () {
@@ -24,16 +43,19 @@ class XConsole {
   }
 
   init () {
+    if (this._isInit) {
+      console.warn('XConsole has been initialized')
+      return
+    }
+
+    this.plugins.onDidAddPlugin(plugin => this._initPlugin(plugin))
+    this.plugins.add(new ConsolePlugin('xConsole:Console', 'Console'))
+    this.plugins.add(new NetworkPlugin('xConsole:Network', 'Network'))
+
+    this.commands.add('xconsole:show', () => this._showPanel())
+    this.commands.add('xconsole:hide', () => this._hidePanel())
+
     this._showEntry()
-    this._addPlugin(new ConsolePlugin('xConsole:Console', 'Console'))
-    this._addPlugin(new NetworkPlugin('xConsole:Network', 'Network'))
-    // this.addPlugin({
-    //   id: 'xConsole:Storage',
-    //   name: 'Storage',
-    //   render () {
-    //     return <p>Storage</p>
-    //   }
-    // })
   }
 
   /**
@@ -85,7 +107,7 @@ class XConsole {
       this._panel.classList.add('panel')
       ReactDOM.render(
         <XConsoleView
-          plugins={this._plugins}
+          plugins={this.plugins.getAll()}
           onClose={() => this._hidePanel()}
         />
         , this._panel)
@@ -116,14 +138,6 @@ class XConsole {
     this.emit('xconsole:hide')
   }
 
-  _addPlugin (plugin) {
-    if (!isObject(plugin)) {
-      throw new TypeError('Invalid plugin:' + plugin)
-    }
-    this._initPlugin(plugin)
-    this._plugins.push(plugin)
-  }
-
   _initPlugin (plugin) {
     // All plugins hold instance of xConsole
     Object.defineProperty(plugin, 'xConsole', { value: this })
@@ -136,7 +150,7 @@ class XConsole {
     })
 
     // listen 'XConsoleHide' event
-    this.on('xconsole:show', () => {
+    this.on('xconsole:hide', () => {
       if (isFunction(plugin.onXConsoleHide)) {
         plugin.onXConsoleHide(this)
       }
@@ -148,11 +162,17 @@ class XConsole {
     }
 
     // triggle 'ready' event of plugin. Only triggle once
-    window.addEventListener('DOMContentLoaded', () => {
+    if (this._isDOMContentLoaded) {
       if (isFunction(plugin.onReady)) {
         plugin.onReady(this)
       }
-    })
+    } else {
+      this.on('xconsole:ready', () => {
+        if (isFunction(plugin.onReady)) {
+          plugin.onReady(this)
+        }
+      })
+    }
   }
 }
 

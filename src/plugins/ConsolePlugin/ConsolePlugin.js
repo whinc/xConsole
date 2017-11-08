@@ -5,14 +5,6 @@ import ConsolePanel from './ConsolePanel'
 /**
  * Display messages from console.
  *
- * Supported methods of console:
- * * log
- * * info
- * * warn
- * * error
- * * debug
- * * clear
- *
  * Supported commands:
  * * 'console:log'
  * * 'console:info'

@@ -58,7 +58,7 @@
       addEventListener('DOMContentLoaded', function () {
         if (window.xConsole) {
           xConsole.init()
-          // console plugin test code
+          // test console plugin
           console.log('test log')
           console.info('test info')
           console.warn('test warn')
@@ -69,6 +69,42 @@
           xConsole.commands.dispatch('console:warn', {texts: ['dispatch command warn']})
           xConsole.commands.dispatch('console:error', {texts: ['dispatch command error']})
           xConsole.commands.dispatch('console:debug', {texts: ['dispatch command debug']})
+          // test add plugin
+          xConsole.plugins.add({
+            id: 'xConsole:Storage',
+            name: 'Storage',
+            render() {
+              var h = React.createElement.bind(React)
+              return (
+                h('div', {},
+                  h('h1', {}, 'Storage'),
+                  h('ul', {},
+                    h('li', {}, 'LocalStorage'),
+                    h('li', {}, 'SessionStorage')
+                  )
+                )
+              )
+            },
+            onInit () {
+              console.log(`[StoragePlugin] onInit() called`)
+            },
+            onReady () {
+              console.log(`[StoragePlugin] onReady() called`)
+            },
+            onXConsoleShow() {
+              console.log(`[StoragePlugin] onXConsoleShow() called`)
+            },
+            onXConsoleHide() {
+              console.log(`[StoragePlugin] onXConsoleHide() called`)
+            },
+            onShow() {
+              console.log(`[StoragePlugin] onShow() called`)
+            },
+            // Plugin is going to be hidden
+            onHide() {
+              console.log(`[StoragePlugin] onHide() called`)
+            }
+          })
         }
       })
     </script>
