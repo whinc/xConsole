@@ -35,7 +35,7 @@ export default class ConsolePlugin extends Plugin {
     window.xConsole.commands.add('console:warn', value => this._handleCommandPrint('warn', value))
     window.xConsole.commands.add('console:error', value => this._handleCommandPrint('error', value))
     window.xConsole.commands.add('console:debug', value => this._handleCommandPrint('debug', value))
-    window.xConsole.commands.add('console:clear', value => this._handleCommandClear(value))
+    window.xConsole.commands.add('console:clear', value => this._handleCommandClear())
   }
 
   _genId () {
@@ -44,16 +44,17 @@ export default class ConsolePlugin extends Plugin {
       : (this._messageId = 1)
   }
 
-  _handleCommandClear (value) {
+  _handleCommandClear () {
     if (this.ref) {
       this.ref.clearMessages()
+      this._handleCommandPrint('log', {texts: ['Console was cleared']})
     } else {
       this._clearMessages()
     }
   }
 
-  _handleCommandPrint (level, value) {
-    const { texts = [], timestamp = Date.now() } = value || {}
+  _handleCommandPrint (level, value = {}) {
+    const { texts = [], timestamp = Date.now() } = value
 
     const message = {
       id: this._genId(),
@@ -84,7 +85,11 @@ export default class ConsolePlugin extends Plugin {
 
       // hook console methods
       window.console[name] = (...args) => {
-        this._handleCommandPrint(name, { texts: args })
+        if (/^(log|info|error|warn|debug)$/.test(name)) {
+          this._handleCommandPrint(name, { texts: args })
+        } else {
+          this._handleCommandClear()
+        }
 
         // call native console method
         console[name](...args)
