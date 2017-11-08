@@ -28,6 +28,7 @@ export default class ConsolePlugin extends Plugin {
   onInit () {
     // Hold native console object
     this._nativeConsole = this._hookConsole()
+    this._hookGlobalError()
 
     // register commands
     window.xConsole.commands.add('console:log', value => this._handleCommandPrint('log', value))
@@ -96,6 +97,22 @@ export default class ConsolePlugin extends Plugin {
       }
     })
     return console
+  }
+
+  // hook window.onerror handler to record global error
+  _hookGlobalError () {
+    const _onerror = window.onerror
+    window.onerror = (msg, url, lineNo, columnNo, error) => {
+      // call origin error handler
+      if (typeof _onerror === 'function') {
+        _onerror.call(window, ...arguments)
+      }
+
+      // dispay error on ConsolePanel
+      this._handleCommandPrint('error', {
+        texts: [msg, url, lineNo, columnNo, error]
+      })
+    }
   }
 
   _clearMessages () {

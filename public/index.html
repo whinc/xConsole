@@ -55,6 +55,10 @@
         }
       }
 
+      window.onerror = function () {
+        console.log('window.onerror is processed by origin handler')
+      }
+
       addEventListener('DOMContentLoaded', function () {
         if (window.xConsole) {
           xConsole.init()
@@ -105,6 +109,8 @@
               console.log(`[StoragePlugin] onHide() called`)
             }
           })
+
+          throw new SyntaxError('global error')
         }
       })
     </script>
