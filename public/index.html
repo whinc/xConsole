@@ -56,23 +56,23 @@
       }
 
       window.onerror = function () {
-        console.log('window.onerror is processed by origin handler')
+        console.log('window.onerror handler')
       }
 
       addEventListener('DOMContentLoaded', function () {
         if (window.xConsole) {
           xConsole.init()
           // test console plugin
-          console.log('test log')
-          console.info('test info')
-          console.warn('test warn')
-          console.error('test error')
-          console.debug('test debug')
-          xConsole.commands.dispatch('console:log', {texts: ['dispatch command log']})
-          xConsole.commands.dispatch('console:info', {texts: ['dispatch command info']})
-          xConsole.commands.dispatch('console:warn', {texts: ['dispatch command warn']})
-          xConsole.commands.dispatch('console:error', {texts: ['dispatch command error']})
-          xConsole.commands.dispatch('console:debug', {texts: ['dispatch command debug']})
+          console.log('[test] log')
+          console.info('[test] info')
+          console.warn('[test] warn')
+          console.error('[test] error')
+          console.debug('[test] debug')
+          xConsole.commands.dispatch('console:log', {texts: ['[test] dispatch command log']})
+          xConsole.commands.dispatch('console:info', {texts: ['[test] dispatch command info']})
+          xConsole.commands.dispatch('console:warn', {texts: ['[test] dispatch command warn']})
+          xConsole.commands.dispatch('console:error', {texts: ['[test] dispatch command error']})
+          xConsole.commands.dispatch('console:debug', {texts: ['[test] dispatch command debug']})
           // test add plugin
           xConsole.plugins.add({
             id: 'xConsole:Storage',
@@ -110,7 +110,13 @@
             }
           })
 
-          throw new SyntaxError('global error')
+          setTimeout(function () {
+            Promise.reject('[test] capture promise unhandle rejection error')
+          }, 0)
+
+          setTimeout(function () {
+            throw new Error('[test] capture global error')
+          }, 0)
         }
       })
     </script>

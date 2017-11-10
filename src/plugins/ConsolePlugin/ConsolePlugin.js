@@ -29,6 +29,7 @@ export default class ConsolePlugin extends Plugin {
     // Hold native console object
     this._nativeConsole = this._hookConsole()
     this._hookGlobalError()
+    this._hookPromiseError()
 
     // register commands
     window.xConsole.commands.add('console:log', value => this._handleCommandPrint('log', value))
@@ -101,16 +102,34 @@ export default class ConsolePlugin extends Plugin {
 
   // hook window.onerror handler to record global error
   _hookGlobalError () {
+    const self = this
     const _onerror = window.onerror
-    window.onerror = (msg, url, lineNo, columnNo, error) => {
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
       // call origin error handler
       if (typeof _onerror === 'function') {
-        _onerror.call(window, ...arguments)
+        _onerror.apply(window, arguments)
       }
 
       // dispay error on ConsolePanel
-      this._handleCommandPrint('error', {
+      self._handleCommandPrint('error', {
         texts: [msg, url, lineNo, columnNo, error]
+      })
+    }
+  }
+
+  // hook window.onunhandledrejection handler to record promise error
+  _hookPromiseError () {
+    const self = this
+    const _onunhandledrejection = window.onunhandledrejection
+    window.onunhandledrejection = function (event) {
+      // call origin error handler
+      if (typeof _onunhandledrejection === 'function') {
+        _onunhandledrejection.apply(window, arguments)
+      }
+
+      // dispay error on ConsolePanel
+      self._handleCommandPrint('error', {
+        texts: ['Uncaught (in promise)', event.reason]
       })
     }
   }
