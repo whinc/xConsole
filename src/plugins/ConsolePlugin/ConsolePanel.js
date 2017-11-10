@@ -1,4 +1,5 @@
 import React from 'react'
+import MessageBox from './MessageBox'
 import './ConsolePanel.css'
 
 export default class ConsolePanel extends React.Component {
@@ -6,7 +7,6 @@ export default class ConsolePanel extends React.Component {
     super(props)
     this.state = {
       messages: [],
-      isTimestampVisible: true,
       logLevel: LogLevel.ALL
     }
   }
@@ -16,19 +16,6 @@ export default class ConsolePanel extends React.Component {
     if (messages.length > 0) {
       this.setState({ messages })
     }
-  }
-
-  formatDate (timestamp) {
-    const align = (input, length = 2) => {
-      input = String(input)
-      if (input.length < length) {
-        return '0'.repeat(length - input.length) + input
-      } else {
-        return input
-      }
-    }
-    const d = new Date(timestamp)
-    return align(d.getHours()) + ':' + align(d.getMinutes()) + ':' + align(d.getSeconds()) + '.' + align(d.getMilliseconds(), 3)
   }
 
   clearMessages () {
@@ -44,7 +31,7 @@ export default class ConsolePanel extends React.Component {
   }
 
   render () {
-    const {messages, isTimestampVisible, logLevel} = this.state
+    const {messages, logLevel} = this.state
 
     let _messages = messages.filter(msg => new RegExp(msg.level).test(logLevel))
 
@@ -62,16 +49,7 @@ export default class ConsolePanel extends React.Component {
           </select>
         </div>
         <div className='xc-console-panel__content'>
-          {_messages.map(msg => {
-            return (
-              <div key={msg.id} className={`msg-box ${msg.level}`}>
-                {isTimestampVisible && <span className={'timestamp'}>{this.formatDate(msg.timestamp)}</span>}
-                {' '}
-                <span>{msg.texts.join(' ')}</span>
-
-              </div>
-            )
-          })}
+          {_messages.map(msg => <MessageBox key={msg.id} message={msg} />)}
         </div>
       </div>
     )

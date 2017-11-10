@@ -1,0 +1,54 @@
+.MessageBox {
+  font-size: 15px;
+  padding: 6px;
+  border-bottom: 1px solid;
+}
+
+.MessageBox--system{
+  color: gray;
+  border-color: #FFF;
+  background-color: #FFF;
+  font-style: italic;
+ }
+
+.MessageBox--clear{
+  color: gray;
+  border-color: #FFF;
+  background-color: #FFF;
+  font-style: italic;
+ }
+
+.MessageBox--log{
+  color: #000;
+  border-color: #FFF;
+  background-color: #FFF;
+}
+
+.MessageBox--debug{
+  color: #daa520;
+  border-color: #FFF;
+  background-color: #FFF;
+}
+
+.MessageBox--warn{
+  color: orange;
+  border-color: #ffb930;
+  background-color: #fffacd;
+}
+
+.MessageBox--info{
+  color: #6a5acd;
+  border-color: #FFF;
+  background-color: #FFF;
+}
+
+.MessageBox--error{
+  color: #dc143c;
+  border-color: #f4a0ab;
+  background-color: #ffe4e1;
+}
+
+.MessageBox__timestamp {
+  color: gray;
+  font-style: normal;
+}
