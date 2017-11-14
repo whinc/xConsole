@@ -1,4 +1,7 @@
 .MessageBox {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   font-size: 15px;
   padding: 6px;
   border-bottom: 1px solid;
@@ -48,7 +51,26 @@
   background-color: #ffe4e1;
 }
 
-.MessageBox__timestamp {
+.MessageBox__item {
+  display: flex;
+  flex-direction: column;
+}
+
+.MessageBox__item--timestamp {
   color: gray;
   font-style: normal;
 }
+
+.MessageBox-text-block {
+  display: flex;
+  /* word-break: break-all; */
+}
+
+.MessageBox-text-block--vertical {
+  flex-direction: column;
+}
+
+.MessageBox-text-block--intend {
+  padding-left: 12px;
+}
+

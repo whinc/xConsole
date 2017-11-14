@@ -88,8 +88,9 @@ export default class ConsolePlugin extends Plugin {
       // hook console methods
       window.console[name] = (...args) => {
         if (/^(log|info|error|warn|debug)$/.test(name)) {
+        // if (/^(warn)$/.test(name)) {
           this._handleCommandPrint(name, { texts: args })
-        } else {
+        } else if (/^(clear)$/.test(name)) {
           this._handleCommandClear()
         }
 
@@ -112,7 +113,8 @@ export default class ConsolePlugin extends Plugin {
 
       // dispay error on ConsolePanel
       self._handleCommandPrint('error', {
-        texts: [msg, url, lineNo, columnNo, error]
+        // texts: [msg, url, lineNo, columnNo, error]
+        texts: [msg]
       })
     }
   }
@@ -129,7 +131,7 @@ export default class ConsolePlugin extends Plugin {
 
       // dispay error on ConsolePanel
       self._handleCommandPrint('error', {
-        texts: ['Uncaught (in promise)', event.reason]
+        texts: ['Uncaught (in promise) ' + event.reason]
       })
     }
   }
