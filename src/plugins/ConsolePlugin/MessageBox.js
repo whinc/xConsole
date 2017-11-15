@@ -8,6 +8,7 @@ import isNumber from 'lodash.isnumber'
 import isNull from 'lodash.isnull'
 import isUndefined from 'lodash.isundefined'
 import './MessageBox.css'
+import TextBlock from './TextBlock'
 
 /**
  * Display a message which may includes one line or multi-line
@@ -110,7 +111,7 @@ export default class MessageBox extends React.Component {
         </span>
         {texts.map((value, index) =>
           <div key={index} className='MessageBox__item'>
-            {this.renderTextBlock(value)}
+            <TextBlock value={value} />
           </div>
         )}
       </div>

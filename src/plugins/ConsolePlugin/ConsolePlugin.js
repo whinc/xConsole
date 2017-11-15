@@ -27,7 +27,7 @@ export default class ConsolePlugin extends Plugin {
 
   onInit () {
     // Hold native console object
-    this._nativeConsole = this._hookConsole()
+    window.xConsole.console = this._hookConsole()
     this._hookGlobalError()
     this._hookPromiseError()
 

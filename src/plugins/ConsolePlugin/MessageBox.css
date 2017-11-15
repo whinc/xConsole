@@ -60,17 +60,3 @@
   color: gray;
   font-style: normal;
 }
-
-.MessageBox-text-block {
-  display: flex;
-  /* word-break: break-all; */
-}
-
-.MessageBox-text-block--vertical {
-  flex-direction: column;
-}
-
-.MessageBox-text-block--intend {
-  padding-left: 12px;
-}
-
