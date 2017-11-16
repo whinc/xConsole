@@ -38,6 +38,7 @@ export default class TextBlock extends React.Component {
     })
   }
 
+  // e.g. [1, [2, 3], 4] --> [1, Array(2), 4]
   createArraySummary (input) {
     let r = input.reduce((r, value) => {
       return r + `${this.createSummary(value, false, false)}, `
@@ -46,6 +47,7 @@ export default class TextBlock extends React.Component {
     return `[${r}]`
   }
 
+  // e.g. {a: 1, b: {c: 1}, d: 3} --> {a: 1, b: {...}, d: 3}
   createObjectSummary (input) {
     let r = Object.keys(input).reduce((r, key) => {
       const value = input[key]
@@ -57,13 +59,28 @@ export default class TextBlock extends React.Component {
   }
 
   /**
-   * Create summary of the input value based on it's type, foled status and is root
+   * Create summary of the input value based on value type and the current status of TextBlock
    * @param {any} input
    * @param {boolean} isFolded
    * @param {boolean} isRoot
    */
   createSummary (input, isFolded = true, isRoot = true) {
-    if (isArray(input)) {
+    if (isString(input)) {
+      return `"${input}"`
+    } else if (isNumber(input)) {
+      return String(input)
+    } else if (isBoolan(input)) {
+      return String(input)
+    } else if (isNull(input)) {
+      return String(input)
+    } else if (isUndefined(input)) {
+      return String(input)
+    } else if (typeof input === 'function') {
+      // TODO:
+      // 1. replace the first 'function' with 'f'
+      // 2. use isFunction() to adjudge the function type
+      return `"${String(input)}"`
+    } else if (isArray(input)) {
       if (isRoot) {
         return this.createArraySummary(input)
       } else {
@@ -100,7 +117,7 @@ export default class TextBlock extends React.Component {
       case isBoolan(input):
         return (
           <span className='TextBlock'>
-            &nbsp;{String(input)}
+            &nbsp;{this.createSummary(input)}
           </span>
         )
       case isObject(input):
