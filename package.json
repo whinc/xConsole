@@ -16,6 +16,7 @@
     "font-awesome": "^4.7.0",
     "lodash.isarray": "^4.0.0",
     "lodash.isboolean": "^3.0.3",
+    "lodash.isfunction": "^3.0.8",
     "lodash.isnull": "^3.0.0",
     "lodash.isnumber": "^3.0.3",
     "lodash.isobject": "^3.0.2",
@@ -25,11 +26,11 @@
     "react-dom": "^16.0.0"
   },
   "devDependencies": {
-    "source-map-explorer": "^1.5.0",
-    "babel-eslint": "^8.0.1",
+    "babel-eslint": "^7.2.3",
     "cz-conventional-changelog": "^2.1.0",
     "prop-types": "^15.6.0",
     "react-scripts": "1.0.16",
+    "source-map-explorer": "^1.5.0",
     "standard": "^10.0.3"
   },
   "scripts": {
