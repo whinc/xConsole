@@ -1,14 +1,13 @@
 
 .TextBlock {
   display: flex;
-  /* word-break: break-all; */
 }
 
 .TextBlock--vertical {
   flex-direction: column;
 }
 
-.TextBlock--intend {
-  padding-left: 12px;
+.TextBlock__indent {
+  white-space: pre;
 }
 

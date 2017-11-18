@@ -11,16 +11,18 @@ import './TextBlock.css'
 
 export default class TextBlock extends React.Component {
   static PropTypes = {
+    name: PropTypes.string,
     value: PropTypes.any.isRequired,
-    isSummary: PropTypes.bool,
-    isRoot: PropTypes.bool
+    indentSize: PropTypes.number
   }
 
   static defaultProps = {
+    name: '',
+    indentSize: 0
     // If current block display as a summary message or a detail list
-    isSummary: true,
+    // isSummary: true,
     // If current <TextBlock> is the root block
-    isRoot: true
+    // isRoot: true
   }
 
   constructor () {
@@ -106,8 +108,8 @@ export default class TextBlock extends React.Component {
   }
 
   render () {
-    const {value: input, isSummary, isRoot} = this.props
-    const {isFolded} = this.state
+    const { name, value: input, indentSize } = this.props
+    const { isFolded } = this.state
 
     switch (true) {
       case isString(input):
@@ -117,50 +119,40 @@ export default class TextBlock extends React.Component {
       case isBoolan(input):
         return (
           <span className='TextBlock'>
-            &nbsp;{this.createSummary(input)}
+            {indentSize > 0 && <span className='TextBlock__indent'>{' '.repeat(indentSize)}</span>}
+            {name && <span>{name}</span>}
+            {name && <span>{': '}</span>}
+            <span>{this.createSummary(input)}</span>
           </span>
         )
       case isObject(input):
-        /*
-         * If input is 'object' it can display with two mode:
-         * 1. show one line summary
-         * 2. show mutil-lines, each line display a key-value propperty of the input
-         *
-         * AAAA (summary === true)
-         *
-         * AAAA (summary === false)
-         *   BB: CC
-         *   DD: EE
-         */
-        if (isSummary) {
-          return (
-            <span className='TextBlock TextBlock--vertical'>
-              <span onClick={this.toggleFoldStatus}>&nbsp;{this.createSummary(input, isFolded, isRoot)}</span>
-              <span>
-                {!isFolded && <TextBlock value={input} isSummary={false} isRoot={false} /> }
-              </span>
+        return (
+          <span className='TextBlock TextBlock--vertical'>
+            <span className='TextBlock'>
+              {indentSize > 0 && <span className='TextBlock__indent'>{' '.repeat(indentSize)}</span>}
+              {name && <span>{name}</span>}
+              {name && <span>{': '}</span>}
+              <span onClick={this.toggleFoldStatus}>{this.createSummary(input)}</span>
             </span>
-          )
-        } else {
-          return (
-            <span className='TextBlock TextBlock--vertical TextBlock--intend'>
-              {Object.keys(input).map(key => {
-                return (
-                  <span key={key} className='TextBlock'>
-                    <span>{key}</span>
-                    <span>:</span>
-                    <span>
-                      <TextBlock value={input[key]} isSummary isRoot={false} />
-                    </span>
-                  </span>
-                )
-              }
-              )}
-            </span>
-          )
-        }
+            {!isFolded && Object.keys(input).map(key =>
+              <TextBlock
+                key={key}
+                name={key}
+                value={input[key]}
+                indentSize={indentSize + 2}
+              />
+            )}
+          </span>
+        )
       default:
-        return null
+        return (
+          <span className='TextBlock'>
+            {indentSize > 0 && <span className='TextBlock__indent'>{' '.repeat(indentSize)}</span>}
+            {name && <span>{name}</span>}
+            {name && <span>{': '}</span>}
+            <span>{String(input)}</span>
+          </span>
+        )
     }
   }
 }
