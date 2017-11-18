@@ -8,6 +8,7 @@ import isNumber from 'lodash.isnumber'
 import isNull from 'lodash.isnull'
 import isUndefined from 'lodash.isundefined'
 import isFunction from 'lodash.isfunction'
+import isSymbol from 'lodash.issymbol'
 import './TextBlock.css'
 
 export default class TextBlock extends React.Component {
@@ -54,6 +55,8 @@ export default class TextBlock extends React.Component {
       return String(value)
     } else if (isUndefined(value)) {
       return String(value)
+    } else if (isSymbol(value)) {
+      return String(value)
     } else if (isFunction(value)) {
       const summary = String(value).replace(/function/, 'f')
       return `${summary}`
@@ -85,41 +88,76 @@ export default class TextBlock extends React.Component {
     }
   }
 
+  // render each property of 'value' as a <TextBlock>
+  renderChild (value, name, indentSize) {
+    const names = []
+    if (isFunction(value)) {
+      // 'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them
+      const canAccess = name => name !== 'caller' && name !== 'callee' && name !== 'arguments'
+      names.push(...Object.getOwnPropertyNames(value).filter(canAccess))
+    } else {
+      names.push(...Object.getOwnPropertyNames(value))
+    }
+    if (isFunction(Object.getOwnPropertySymbols)) {
+      names.push(...Object.getOwnPropertySymbols(value))
+    }
+    if (names.indexOf('__proto__') === -1) {
+      names.push('__proto__')
+    }
+
+    return names.map(name => {
+      let _value
+      if (name === '__proto__') {
+        if (isFunction(Object.getPrototypeOf)) {
+          _value = Object.getPrototypeOf(value)
+        } else {
+          _value = value[name]
+        }
+      } else {
+        _value = value[name]
+      }
+      // convert the key and name to string explicitly because name may be 'symbol' type
+      return (
+        <TextBlock
+          key={String(name)}
+          name={String(name)}
+          value={_value}
+          indentSize={indentSize + 2}
+        />
+      )
+    })
+    // return children
+  }
+
   render () {
-    const { name, value: input, indentSize } = this.props
+    const { name, value, indentSize } = this.props
     const { isFolded } = this.state
 
     switch (true) {
-      case isString(input):
-      case isNumber(input):
-      case isNull(input):
-      case isUndefined(input):
-      case isBoolan(input):
+      case isString(value):
+      case isNumber(value):
+      case isNull(value):
+      case isUndefined(value):
+      case isBoolan(value):
+      case isSymbol(value):
         return (
           <span className='TextBlock'>
             {indentSize > 0 && <span className='TextBlock__indent'>{' '.repeat(indentSize)}</span>}
             {name && <span>{name}</span>}
             {name && <span>{': '}</span>}
-            <span>{this.createSummary(input, name, true)}</span>
+            <span>{this.createSummary(value, name, true)}</span>
           </span>
         )
-      case isObject(input):
+      case isObject(value):
         return (
           <span className='TextBlock TextBlock--vertical'>
-            <span className='TextBlock'>
+            <span className='TextBlock' onClick={this.toggleFoldStatus}>
               {indentSize > 0 && <span className='TextBlock__indent'>{' '.repeat(indentSize)}</span>}
               {name && <span>{name}</span>}
               {name && <span>{': '}</span>}
-              <span onClick={this.toggleFoldStatus}>{this.createSummary(input, name, isFolded)}</span>
+              <span>{this.createSummary(value, name, isFolded)}</span>
             </span>
-            {!isFolded && Object.keys(input).map(key =>
-              <TextBlock
-                key={key}
-                name={key}
-                value={input[key]}
-                indentSize={indentSize + 2}
-              />
-            )}
+            {!isFolded && this.renderChild(value, name, indentSize)}
           </span>
         )
       default:
@@ -128,7 +166,7 @@ export default class TextBlock extends React.Component {
             {indentSize > 0 && <span className='TextBlock__indent'>{' '.repeat(indentSize)}</span>}
             {name && <span>{name}</span>}
             {name && <span>{': '}</span>}
-            <span>{String(input)}</span>
+            <span>{String(value)}</span>
           </span>
         )
     }

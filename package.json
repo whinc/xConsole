@@ -21,6 +21,7 @@
     "lodash.isnumber": "^3.0.3",
     "lodash.isobject": "^3.0.2",
     "lodash.isstring": "^4.0.1",
+    "lodash.issymbol": "^4.0.1",
     "lodash.isundefined": "^3.0.1",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
