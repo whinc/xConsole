@@ -1,6 +1,7 @@
 import React from 'react'
 import MessageBox from './MessageBox'
 import './ConsolePanel.css'
+import TextInlineBlock from './TextInlineBlock'
 
 export default class ConsolePanel extends React.Component {
   constructor (props) {
@@ -49,6 +50,29 @@ export default class ConsolePanel extends React.Component {
           </select>
         </div>
         <div className='xc-console-panel__content'>
+          {/* <div>
+            <TextInlineBlock
+              value={{
+                a: 1,
+                b: 'b',
+                c: true,
+                d: null,
+                e: undefined,
+                f: function () { },
+                g: {},
+                h: {a: 1, b: {a: 2, c: {a: 3, d: {e: 3}}}},
+                m: [],
+                n: [1, 'b']
+              }}
+              depth={-1}
+            />
+          </div>
+          <div> <TextInlineBlock value={[1, 'b', null, true]} /> </div>
+          <div> <TextInlineBlock value={999} /> </div>
+          <div> <TextInlineBlock value /> </div>
+          <div> <TextInlineBlock value={'hello'} /> </div>
+          <div> <TextInlineBlock value={null} /> </div>
+          <div> <TextInlineBlock value={undefined} /> </div> */}
           {_messages.map(msg => <MessageBox key={msg.id} message={msg} />)}
         </div>
       </div>

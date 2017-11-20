@@ -1,0 +1,25 @@
+.TextInlineBlock {
+  color: black;
+}
+
+.TextInlineBlock__name {
+}
+
+.TextInlineBlock__separator {
+  white-space: pre;
+}
+
+.TextInlineBlock__value { }
+.TextInlineBlock__value--undefined, .TextInlineBlock__value--null {
+  color: #808080
+}
+.TextInlineBlock__value--boolean {
+  color: #0D22AA
+}
+.TextInlineBlock__value--number {
+  color: #1C00CF
+}
+.TextInlineBlock__value--string, .TextInlineBlock__value--symbol {
+  color: #C41A16
+}
+

@@ -69,10 +69,10 @@
           var a = {
             a1: 1,
             a2: {
-              b1: 1,
-              b2: 2
+              b1: '1',
+              b2: true
             },
-            [Symbol('c')]: 3
+            [Symbol('c')]: null
           }
           Object.defineProperty(a, 'd', {
             get: function d () { return {d1: 1, d2: 2}},
@@ -82,7 +82,7 @@
             set: function e (v) {this._e = v}
           })
           Object.defineProperty(a, 'f', {
-            value: 'f'
+            value: undefined
           })
           Object.defineProperty(a, 'g', {
             value: 'g',

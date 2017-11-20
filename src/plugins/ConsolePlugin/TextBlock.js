@@ -10,6 +10,7 @@ import isUndefined from 'lodash.isundefined'
 import isFunction from 'lodash.isfunction'
 import isSymbol from 'lodash.issymbol'
 import './TextBlock.css'
+import TextInlineBlock from './TextInlineBlock'
 
 export default class TextBlock extends React.Component {
   static PropTypes = {
@@ -46,66 +47,66 @@ export default class TextBlock extends React.Component {
    * @param {sting = ''} name the name of value
    * @param {boolean} isFolded the value whether folded or not
    */
-  createSummary (value, name = '', isFolded = true) {
-    if (isString(value)) {
-      // if name is empty the value display in log message
-      // else the value display in object which need wrapped with double quote
-      return name ? `"${value}"` : value
-    } else if (isNumber(value)) {
-      return String(value)
-    } else if (isBoolan(value)) {
-      return String(value)
-    } else if (isNull(value)) {
-      return String(value)
-    } else if (isUndefined(value)) {
-      return String(value)
-    } else if (isSymbol(value)) {
-      return String(value)
-    } else if (isFunction(value)) {
-      let summary = String(value).replace(/function/, 'f')
-      if (name) { // hide the function body when function appear in object key-value
-        summary = summary.replace(/{.*}/, '')
-      }
-      return `${summary}`
-    } else if (isArray(value)) {
-      /**
-       * Show the summary of content when satisfy one of condition below:
-       * a. display as a value
-       * b. display as a value in array
-       *
-       * e.g. [1, [2, 3], 4] --> [1, Array(2), 4]
-       */
-      if (!name || (isFolded && value.length > 0)) {  // display as a value obj object
-        let summary = value.reduce((s, v, k) => {
-          return s + `${this.createSummary(v, k, false)}, `
-        }, '')
-        summary = summary.substring(0, summary.length - 2)
-        return `[${summary}]`
-      } else {
-        return `Array(${value.length})`
-      }
-    } else if (isObject(value)) {
-      /**
-       * Show the summary of content when satisfy one of condition below:
-       * a. display as a value
-       * b. display as a value obj object
-       *
-       * e.g. {a: 1, b: {c: 1}, d: 3} --> {a: 1, b: {...}, d: 3}
-       */
-      if (!name || (isFolded && Object.keys(value).length > 0)) {
-        let summary = Object.keys(value).reduce((s, k) => {
-          const v = value[k]
-          return s + `${k}: ${this.createSummary(v, k, false)}, `
-        }, '')
-        summary = summary.substring(0, summary.length - 2)
-        return `{${summary}}`
-      } else {
-        return 'Object'
-      }
-    } else {
-      return String(value)
-    }
-  }
+  // createSummary (value, name = '', isFolded = true) {
+  //   if (isString(value)) {
+  //     // if name is empty the value display in log message
+  //     // else the value display in object which need wrapped with double quote
+  //     return name ? `"${value}"` : value
+  //   } else if (isNumber(value)) {
+  //     return String(value)
+  //   } else if (isBoolan(value)) {
+  //     return String(value)
+  //   } else if (isNull(value)) {
+  //     return String(value)
+  //   } else if (isUndefined(value)) {
+  //     return String(value)
+  //   } else if (isSymbol(value)) {
+  //     return String(value)
+  //   } else if (isFunction(value)) {
+  //     let summary = String(value).replace(/function/, 'f')
+  //     if (name) { // hide the function body when function appear in object key-value
+  //       summary = summary.replace(/{.*}/, '')
+  //     }
+  //     return `${summary}`
+  //   } else if (isArray(value)) {
+  //     /**
+  //      * Show the summary of content when satisfy one of condition below:
+  //      * a. display as a value
+  //      * b. display as a value in array
+  //      *
+  //      * e.g. [1, [2, 3], 4] --> [1, Array(2), 4]
+  //      */
+  //     if (!name || (isFolded && value.length > 0)) {  // display as a value obj object
+  //       let summary = value.reduce((s, v, k) => {
+  //         return s + `${this.createSummary(v, k, false)}, `
+  //       }, '')
+  //       summary = summary.substring(0, summary.length - 2)
+  //       return `[${summary}]`
+  //     } else {
+  //       return `Array(${value.length})`
+  //     }
+  //   } else if (isObject(value)) {
+  //     /**
+  //      * Show the summary of content when satisfy one of condition below:
+  //      * a. display as a value
+  //      * b. display as a value obj object
+  //      *
+  //      * e.g. {a: 1, b: {c: 1}, d: 3} --> {a: 1, b: {...}, d: 3}
+  //      */
+  //     if (!name || (isFolded && Object.keys(value).length > 0)) {
+  //       let summary = Object.keys(value).reduce((s, k) => {
+  //         const v = value[k]
+  //         return s + `${k}: ${this.createSummary(v, k, false)}, `
+  //       }, '')
+  //       summary = summary.substring(0, summary.length - 2)
+  //       return `{${summary}}`
+  //     } else {
+  //       return 'Object'
+  //     }
+  //   } else {
+  //     return String(value)
+  //   }
+  // }
 
   // render each property of 'value' as a <TextBlock>
   renderChild (value, name, indentSize) {
@@ -117,7 +118,10 @@ export default class TextBlock extends React.Component {
       const descriptor = Object.getOwnPropertyDescriptor(value, key)
       let _nameType = descriptor.enumerable ? 'public' : 'private'
 
-      if (descriptor.value !== undefined) {
+      // descriptor.value may be undefined
+      // descript.value and descriptor.get/set can not be existed simultaneously
+      if ((descriptor.value !== undefined) ||
+          (descriptor.get === undefined && descriptor.set === undefined)) {
         let _name = isString(key) ? key : String(key)
         let _value = descriptor.value
         propsList.push({
@@ -219,7 +223,12 @@ export default class TextBlock extends React.Component {
             {name && <span className={nameClass}>{name}</span>}
             {name && <span className='TextBlock__separator'>{': '}</span>}
             <span className={valueClass}>
-              {this.createSummary(value, name, true)}
+              {/* {this.createSummary(value, name, true)} */}
+              <TextInlineBlock
+                name={name}
+                value={value}
+                depth={0}
+              />
             </span>
           </span>
         )
@@ -230,7 +239,14 @@ export default class TextBlock extends React.Component {
               {indentSize > 0 && <span className='TextBlock__indent'>{' '.repeat(indentSize)}</span>}
               {name && <span className={nameClass}>{name}</span>}
               {name && <span className='TextBlock__separator'>{': '}</span>}
-              <span className={valueClass}>{this.createSummary(value, name, isFolded)}</span>
+              <span className={valueClass}>
+                <TextInlineBlock
+                  name={name}
+                  value={value}
+                  depth={isFolded ? 1 : 0}
+                />
+                {/* {this.createSummary(value, name, isFolded)} */}
+              </span>
             </span>
             {!isFolded && this.renderChild(value, name, indentSize)}
           </span>
