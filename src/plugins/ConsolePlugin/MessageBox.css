@@ -4,51 +4,39 @@
   flex-wrap: wrap;
   font-size: 15px;
   padding: 6px;
-  border-bottom: 1px solid;
+  border-bottom: 0.5px solid #F0F0F0;
 }
 
 .MessageBox--system{
-  color: gray;
-  border-color: #FFF;
+  color: #808080;
+  border-color: #F0F0F0;
   background-color: #FFF;
   font-style: italic;
  }
 
 .MessageBox--clear{
-  color: gray;
-  border-color: #FFF;
+  color: #808080;
+  border-color: F0F0F0;
   background-color: #FFF;
   font-style: italic;
  }
 
-.MessageBox--log{
-  color: #000;
-  border-color: #FFF;
-  background-color: #FFF;
-}
-
-.MessageBox--debug{
-  color: #daa520;
-  border-color: #FFF;
-  background-color: #FFF;
+.MessageBox--log, .MessageBox--debug, .MessageBox--info{
+  color: #222222;
+  background-color: #FFFFFF;
+  border-color: #F0F0F0;
 }
 
 .MessageBox--warn{
-  color: orange;
-  border-color: #ffb930;
-  background-color: #fffacd;
-}
-
-.MessageBox--info{
-  color: #6a5acd;
-  border-color: #FFF;
-  background-color: #FFF;
+  color: #5C3B00;
+  background-color: #FFFBE6;
+  border-color: #FFF5C2;
 }
 
 .MessageBox--error{
-  color: #dc143c;
-  border-color: #f4a0ab;
-  background-color: #ffe4e1;
+  color: #FF0000;
+  background-color: #FFF0F0;
+  border-color: #FFD7D7;
 }
 
 .MessageBox__item {
@@ -57,6 +45,6 @@
 }
 
 .MessageBox__item--timestamp {
-  color: gray;
+  color: #808080;
   font-style: normal;
 }

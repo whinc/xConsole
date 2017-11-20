@@ -11,3 +11,25 @@
   white-space: pre;
 }
 
+.TextBlock__name {
+  color: #881391;
+}
+
+.TextBlock__name--private {
+  color: #B871BD;
+}
+
+.TextBlock__value { }
+.TextBlock__value--undefined, .TextBlock__value--null {
+  color: #808080
+}
+.TextBlock__value--boolean {
+  color: #0D22AA
+}
+.TextBlock__value--number {
+  color: #1C00CF
+}
+.TextBlock__value--string, .TextBlock__value--symbol {
+  color: #C41A16
+}
+

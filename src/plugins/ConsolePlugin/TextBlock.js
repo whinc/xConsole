@@ -14,12 +14,14 @@ import './TextBlock.css'
 export default class TextBlock extends React.Component {
   static PropTypes = {
     name: PropTypes.string,
+    nameType: PropTypes.oneOf(['private', 'public']),
     value: PropTypes.any.isRequired,
     indentSize: PropTypes.number
   }
 
   static defaultProps = {
     name: '',
+    nameType: 'public',
     indentSize: 0
   }
 
@@ -46,7 +48,9 @@ export default class TextBlock extends React.Component {
    */
   createSummary (value, name = '', isFolded = true) {
     if (isString(value)) {
-      return `"${value}"`
+      // if name is empty the value display in log message
+      // else the value display in object which need wrapped with double quote
+      return name ? `"${value}"` : value
     } else if (isNumber(value)) {
       return String(value)
     } else if (isBoolan(value)) {
@@ -90,48 +94,102 @@ export default class TextBlock extends React.Component {
 
   // render each property of 'value' as a <TextBlock>
   renderChild (value, name, indentSize) {
-    const names = []
-    if (isFunction(value)) {
-      // 'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them
-      const canAccess = name => name !== 'caller' && name !== 'callee' && name !== 'arguments'
-      names.push(...Object.getOwnPropertyNames(value).filter(canAccess))
-    } else {
-      names.push(...Object.getOwnPropertyNames(value))
-    }
-    if (isFunction(Object.getOwnPropertySymbols)) {
-      names.push(...Object.getOwnPropertySymbols(value))
-    }
-    if (names.indexOf('__proto__') === -1) {
-      names.push('__proto__')
+    const keys = [...Object.getOwnPropertyNames(value)]
+    const propsList = []
+    let _indentSize = indentSize + 2
+
+    keys.forEach((key, index) => {
+      const descriptor = Object.getOwnPropertyDescriptor(value, key)
+      let _nameType = descriptor.enumerable ? 'public' : 'private'
+
+      if (descriptor.value !== undefined) {
+        let _name = isString(key) ? key : String(key)
+        let _value = descriptor.value
+        propsList.push({
+          name: _name,
+          nameType: _nameType,
+          value: _value,
+          indentSize: _indentSize
+        })
+      } else {
+        // TODO: need to lazy calculate
+        let _name = isString(key) ? key : String(key)
+        let _value = descriptor.get()
+        propsList.push({
+          name: _name,
+          nameType: _nameType,
+          value: _value,
+          indentSize: _indentSize
+        })
+
+        if (isFunction(descriptor.get)) {
+          let _name = isString(key) ? key : String(key)
+          _name = `get ${_name}`
+          let _value = descriptor.get
+          propsList.push({
+            name: _name,
+            nameType: _nameType,
+            value: _value,
+            indentSize: _indentSize
+          })
+        }
+
+        if (isFunction(descriptor.set)) {
+          let _name = isString(key) ? key : String(key)
+          _name = `set ${_name}`
+          _value = descriptor.set
+          propsList.push({
+            name: _name,
+            nameType: _nameType,
+            value: _value,
+            indentSize: _indentSize
+          })
+        }
+      }
+    })
+
+    if (keys.indexOf('__proto__') === -1) {
+      let _name = '__proto__'
+      let _nameType = 'private'
+      let _value = isFunction(Object.getPrototypeOf) ? Object.getPrototypeOf(value) : value[_name]
+      propsList.push({
+        name: _name,
+        nameType: _nameType,
+        value: _value,
+        indentSize: _indentSize
+      })
     }
 
-    return names.map(name => {
-      let _value
-      if (name === '__proto__') {
-        if (isFunction(Object.getPrototypeOf)) {
-          _value = Object.getPrototypeOf(value)
+    // sort function for keys
+    const compareFn = (a, b) => {
+      if (a.nameType === 'public' && b.nameType === 'public') {
+        // sort by alphabetical order
+        return a.name < b.name ? -1 : (a.name > b.name ? 1 : 0)
+      } else if (a.nameType === 'public' && b.nameType === 'private') {
+        return -1
+      } else if (a.nameType === 'private' && b.nameType === 'public') {
+        return 1
+      } else {  // a.nameType === 'private' && b.nameType === 'private'
+        if (a.name === '__proto__') {
+          return 1
+        } else if (b.name === '__proto__') {
+          return -1
         } else {
-          _value = value[name]
+          // sort by alphabetical order
+          return a.name < b.name ? -1 : (a.name > b.name ? 1 : 0)
         }
-      } else {
-        _value = value[name]
       }
-      // convert the key and name to string explicitly because name may be 'symbol' type
-      return (
-        <TextBlock
-          key={String(name)}
-          name={String(name)}
-          value={_value}
-          indentSize={indentSize + 2}
-        />
-      )
-    })
-    // return children
+    }
+
+    return propsList.sort(compareFn).map(props => <TextBlock key={props.name} {...props} />)
   }
 
   render () {
-    const { name, value, indentSize } = this.props
+    const { name, nameType, value, indentSize } = this.props
     const { isFolded } = this.state
+
+    const nameClass = nameType === 'private' ? 'TextBlock__name--private' : 'TextBlock__name'
+    const valueClass = name ? `TextBlock__value--${typeof value}` : ''
 
     switch (true) {
       case isString(value):
@@ -143,9 +201,11 @@ export default class TextBlock extends React.Component {
         return (
           <span className='TextBlock'>
             {indentSize > 0 && <span className='TextBlock__indent'>{' '.repeat(indentSize)}</span>}
-            {name && <span>{name}</span>}
+            {name && <span className={nameClass}>{name}</span>}
             {name && <span>{': '}</span>}
-            <span>{this.createSummary(value, name, true)}</span>
+            <span className={valueClass}>
+              {this.createSummary(value, name, true)}
+            </span>
           </span>
         )
       case isObject(value):
@@ -153,9 +213,9 @@ export default class TextBlock extends React.Component {
           <span className='TextBlock TextBlock--vertical'>
             <span className='TextBlock' onClick={this.toggleFoldStatus}>
               {indentSize > 0 && <span className='TextBlock__indent'>{' '.repeat(indentSize)}</span>}
-              {name && <span>{name}</span>}
+              {name && <span className={nameClass}>{name}</span>}
               {name && <span>{': '}</span>}
-              <span>{this.createSummary(value, name, isFolded)}</span>
+              <span className={valueClass}>{this.createSummary(value, name, isFolded)}</span>
             </span>
             {!isFolded && this.renderChild(value, name, indentSize)}
           </span>

@@ -66,22 +66,29 @@
           // test console plugin
           // console.log('[test] log')
           // console.info('[test] info')
-          console.warn({
+          var a = {
             a1: 1,
             a2: {
               b1: 1,
-              b2: {
-                c1: 1,
-                c2: {
-                  d1: 1,
-                  d2: 2
-                },
-                c3: 3
-              },
-              b3: [ 2, [ 3, [ 4, 'd' ], 'c' ], 'b' ]
+              b2: 2
             },
-            a3: 3
+            [Symbol('c')]: 3
+          }
+          Object.defineProperty(a, 'd', {
+            get: function d () { return {d1: 1, d2: 2}},
           })
+          Object.defineProperty(a, 'e', {
+            get: function e () { return 'e'},
+            set: function e (v) {this._e = v}
+          })
+          Object.defineProperty(a, 'f', {
+            value: 'f'
+          })
+          Object.defineProperty(a, 'g', {
+            value: 'g',
+            writable: false
+          })
+          console.warn(a)
           console.warn([
             1,
             [
