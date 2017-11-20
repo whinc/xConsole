@@ -105,7 +105,10 @@
             'a'
           ])
           console.warn('[test] warn', true, 99, undefined, null )
-          console.warn("" + function(){a = function() {}}, () => {b = () => {}}, Array.prototype.fill)
+          var f1 = function(){a = function() {}}
+          var f2 = () => {b = () => {}}
+          var f3 = Array.prototype.fill
+          console.warn(f1, f2, f3, {a: f1})
           // console.error('[test] error')
           // console.debug('[test] debug')
           // xConsole.commands.dispatch('console:log', {texts: ['[test] dispatch command log']})

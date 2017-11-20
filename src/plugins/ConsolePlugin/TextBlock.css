@@ -19,6 +19,10 @@
   color: #B871BD;
 }
 
+.TextBlock__separator {
+  white-space: pre;
+}
+
 .TextBlock__value { }
 .TextBlock__value--undefined, .TextBlock__value--null {
   color: #808080

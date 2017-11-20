@@ -62,30 +62,45 @@ export default class TextBlock extends React.Component {
     } else if (isSymbol(value)) {
       return String(value)
     } else if (isFunction(value)) {
-      const summary = String(value).replace(/function/, 'f')
+      let summary = String(value).replace(/function/, 'f')
+      if (name) { // hide the function body when function appear in object key-value
+        summary = summary.replace(/{.*}/, '')
+      }
       return `${summary}`
-    } else if (isArray(value)) {  // e.g. [1, [2, 3], 4] --> [1, Array(2), 4]
-      if (!name || isFolded) {
+    } else if (isArray(value)) {
+      /**
+       * Show the summary of content when satisfy one of condition below:
+       * a. display as a value
+       * b. display as a value in array
+       *
+       * e.g. [1, [2, 3], 4] --> [1, Array(2), 4]
+       */
+      if (!name || (isFolded && value.length > 0)) {  // display as a value obj object
         let summary = value.reduce((s, v, k) => {
           return s + `${this.createSummary(v, k, false)}, `
         }, '')
-        // remove last comma and space
         summary = summary.substring(0, summary.length - 2)
         return `[${summary}]`
       } else {
         return `Array(${value.length})`
       }
-    } else if (isObject(value)) { // e.g. {a: 1, b: {c: 1}, d: 3} --> {a: 1, b: {...}, d: 3}
-      if (!name || isFolded) {
+    } else if (isObject(value)) {
+      /**
+       * Show the summary of content when satisfy one of condition below:
+       * a. display as a value
+       * b. display as a value obj object
+       *
+       * e.g. {a: 1, b: {c: 1}, d: 3} --> {a: 1, b: {...}, d: 3}
+       */
+      if (!name || (isFolded && Object.keys(value).length > 0)) {
         let summary = Object.keys(value).reduce((s, k) => {
           const v = value[k]
           return s + `${k}: ${this.createSummary(v, k, false)}, `
         }, '')
-        // remove last comma and space
         summary = summary.substring(0, summary.length - 2)
         return `{${summary}}`
       } else {
-        return '{...}'
+        return 'Object'
       }
     } else {
       return String(value)
@@ -202,7 +217,7 @@ export default class TextBlock extends React.Component {
           <span className='TextBlock'>
             {indentSize > 0 && <span className='TextBlock__indent'>{' '.repeat(indentSize)}</span>}
             {name && <span className={nameClass}>{name}</span>}
-            {name && <span>{': '}</span>}
+            {name && <span className='TextBlock__separator'>{': '}</span>}
             <span className={valueClass}>
               {this.createSummary(value, name, true)}
             </span>
@@ -214,7 +229,7 @@ export default class TextBlock extends React.Component {
             <span className='TextBlock' onClick={this.toggleFoldStatus}>
               {indentSize > 0 && <span className='TextBlock__indent'>{' '.repeat(indentSize)}</span>}
               {name && <span className={nameClass}>{name}</span>}
-              {name && <span>{': '}</span>}
+              {name && <span className='TextBlock__separator'>{': '}</span>}
               <span className={valueClass}>{this.createSummary(value, name, isFolded)}</span>
             </span>
             {!isFolded && this.renderChild(value, name, indentSize)}
@@ -225,7 +240,7 @@ export default class TextBlock extends React.Component {
           <span className='TextBlock'>
             {indentSize > 0 && <span className='TextBlock__indent'>{' '.repeat(indentSize)}</span>}
             {name && <span>{name}</span>}
-            {name && <span>{': '}</span>}
+            {name && <span className='TextBlock__separator'>{': '}</span>}
             <span>{String(value)}</span>
           </span>
         )
