@@ -243,7 +243,7 @@ export default class TextBlock extends React.Component {
                 <TextInlineBlock
                   name={name}
                   value={value}
-                  depth={isFolded ? 1 : 0}
+                  depth={(isFolded || !name) ? 1 : 0}
                 />
                 {/* {this.createSummary(value, name, isFolded)} */}
               </span>

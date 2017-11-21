@@ -42,9 +42,11 @@ export default class TextInlineBlock extends React.Component {
     let element = null
 
     if (isString(value)) {
-      // if name is empty the value display in log message
-      // else the value display in object which need wrapped with double quote
-      if (depth !== 0) {
+      /* if name is emptye indicate the value display in log message
+       * else the value is display in object(include array) in which situation the
+       * value should be wrapped with double quotes
+       */
+      if (name) {
         element = <span className='TextInlineBlock__value--string'>"{value}"</span>
       } else {
         element = <span>{value}</span>
@@ -60,39 +62,49 @@ export default class TextInlineBlock extends React.Component {
     } else if (isSymbol(value)) {
       element = <span className='TextInlineBlock__value--symbol'>{String(value)}</span>
     } else if (isFunction(value)) {
-      let summary = String(value).replace(/function/, 'f')
+      // remove 'function' (add back below with style)
+      let summary = String(value).replace(/function/, '')
       if (name) { // hide the function body when function appear in object key-value
         summary = summary.replace(/{.*}/, '')
       }
-      element = <span>{summary}</span>
+      element = (
+        <span>
+          <span className='TextInlineBlock__name'>f</span>
+          {summary}
+        </span>
+      )
     } else if (isArray(value)) {
-      if (depth !== 0) {
+      if (depth !== 0 && value.length > 0) {
         element = (
           <span>
-            [{value.map((v, index) =>
+            {'['}
+            {value.map((v, index) =>
               <span key={index}>
-                <TextInlineBlock key={index} value={v} depth={depth - 1} />
+                <TextInlineBlock key={index} name={index} value={v} depth={depth - 1} />
                 <span>{index !== value.length - 1 ? ', ' : ''}</span>
               </span>
-            )}]
+            )}
+            {']'}
           </span>
         )
       } else {
         element = <span>Array({value.length})</span>
       }
     } else if (isObject(value)) {
-      if (depth !== 0) {
-        const keys = Object.keys(value)
+      const keys = Object.keys(value)
+      if (depth !== 0 && keys.length > 0) {
         element = (
           <span>
-            [{keys.map((k, index) =>
+            {'{'}
+            {keys.map((k, index) =>
               <span key={k}>
                 <span className='TextInlineBlock__name'>{k}</span>
                 <span className='TextInlineBlock__separator'>:</span>
                 <TextInlineBlock name={k} value={value[k]} depth={depth - 1} />
                 <span>{index !== keys.length - 1 ? ', ' : ''}</span>
               </span>
-            )}]
+            )}
+            {'}'}
           </span>
         )
       } else {
