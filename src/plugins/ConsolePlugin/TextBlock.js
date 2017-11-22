@@ -12,6 +12,8 @@ import isSymbol from 'lodash.issymbol'
 import './TextBlock.css'
 import TextInlineBlock from './TextInlineBlock'
 
+const INDENT = 5
+
 export default class TextBlock extends React.Component {
   static PropTypes = {
     name: PropTypes.string,
@@ -133,7 +135,14 @@ export default class TextBlock extends React.Component {
       } else {
         // TODO: need to lazy calculate
         let _name = isString(key) ? key : String(key)
-        let _value = descriptor.get()
+        let _value
+        try {
+          // In strict mode, access to 'callee', 'caller' and 'arguments' may throw exception
+          // capture this exception to avoid crash
+          _value = descriptor.get()
+        } catch (error) {
+          _value = String(error)
+        }
         propsList.push({
           name: _name,
           nameType: _nameType,
@@ -219,7 +228,7 @@ export default class TextBlock extends React.Component {
       case isSymbol(value):
         return (
           <span className='TextBlock'>
-            {indentSize > 0 && <span className='TextBlock__indent'>{' '.repeat(indentSize)}</span>}
+            <span style={{width: INDENT * indentSize}} />
             {name && <span className={nameClass}>{name}</span>}
             {name && <span className='TextBlock__separator'>{': '}</span>}
             <span className={valueClass}>
@@ -233,10 +242,17 @@ export default class TextBlock extends React.Component {
           </span>
         )
       case isObject(value):
+        const iconClass = isFolded ? 'fa fa-caret-down fa-rotate-270' : 'fa fa-caret-down'
         return (
           <span className='TextBlock TextBlock--vertical'>
             <span className='TextBlock' onClick={this.toggleFoldStatus}>
-              {indentSize > 0 && <span className='TextBlock__indent'>{' '.repeat(indentSize)}</span>}
+              {indentSize > 0 ? (
+                <span className='TextBlock__indent' style={{width: INDENT * indentSize}}>
+                  <span className={iconClass} style={{marginRight: 2}} />
+                </span>
+              ) : (
+                <span className={iconClass} style={{marginRight: 2}} />
+              )}
               {name && <span className={nameClass}>{name}</span>}
               {name && <span className='TextBlock__separator'>{': '}</span>}
               <span className={valueClass}>

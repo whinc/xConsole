@@ -8,7 +8,10 @@
 }
 
 .TextBlock__indent {
-  white-space: pre;
+  /* white-space: pre; */
+  display: inline-flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .TextBlock__name {
