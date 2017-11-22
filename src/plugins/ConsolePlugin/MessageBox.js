@@ -20,7 +20,12 @@ export default class MessageBox extends React.Component {
       level: PropTypes.oneOf(['log', 'warn', 'info', 'error', 'debug']),
       texts: PropTypes.arrayOf(PropTypes.any),
       timestamp: PropTypes.number
-    })
+    }),
+    isTimestampVisible: PropTypes.bool
+  }
+
+  static defaultProps = {
+    isTimestampVisible: false
   }
 
   formatDate (timestamp) {
@@ -102,13 +107,16 @@ export default class MessageBox extends React.Component {
 
   render () {
     const {
-      message: { level, texts, timestamp }
+      message: { level, texts, timestamp },
+      isTimestampVisible
     } = this.props
     return (
       <div className={`MessageBox MessageBox--${level}`}>
-        <span className='MessageBox__item MessageBox__item--timestamp'>
-          {this.formatDate(timestamp)}
-        </span>
+        {isTimestampVisible && (
+          <span className='MessageBox__item MessageBox__item--timestamp'>
+            {this.formatDate(timestamp) + ' '}
+          </span>
+        )}
         {texts.map((value, index) =>
           <div key={index} className='MessageBox__item'>
             <TextBlock value={value} />

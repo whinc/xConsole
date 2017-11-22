@@ -243,6 +243,8 @@ export default class TextBlock extends React.Component {
         )
       case isObject(value):
         const iconClass = isFolded ? 'fa fa-caret-down fa-rotate-270' : 'fa fa-caret-down'
+        // if value is a object and display as root(which has no name), it should has a initial indent size for the icon
+        const _indentSize = name ? indentSize : 2
         return (
           <span className='TextBlock TextBlock--vertical'>
             <span className='TextBlock' onClick={this.toggleFoldStatus}>
@@ -264,7 +266,7 @@ export default class TextBlock extends React.Component {
                 {/* {this.createSummary(value, name, isFolded)} */}
               </span>
             </span>
-            {!isFolded && this.renderChild(value, name, indentSize)}
+            {!isFolded && this.renderChild(value, name, _indentSize)}
           </span>
         )
       default:

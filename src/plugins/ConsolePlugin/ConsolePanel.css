@@ -1,4 +1,4 @@
-.xc-console-panel {
+.ConsolePanel, .xc-console-panel {
   height: 60vh;
   display: flex;
   flex-direction: column;
@@ -17,4 +17,9 @@
 .xc-console-panel__content {
   flex: 1 1 calc(60vh - 20px);
   overflow-y: scroll;
+}
+
+.ConsolePanel-setting {
+  display: flex;
+  flex-direction: column;
 }

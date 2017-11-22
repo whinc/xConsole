@@ -8,6 +8,9 @@ export default class ConsolePanel extends React.Component {
     super(props)
     this.state = {
       messages: [],
+      setting: {
+        isTimestampVisible: false
+      },
       logLevel: LogLevel.ALL
     }
   }
@@ -31,8 +34,17 @@ export default class ConsolePanel extends React.Component {
     })
   }
 
+  toggleTimestampVisible () {
+    this.setState({
+      setting: {
+        ...this.state.setting,
+        isTimestampVisible: !this.state.setting.isTimestampVisible
+      }
+    })
+  }
+
   render () {
-    const {messages, logLevel} = this.state
+    const {messages, logLevel, setting} = this.state
 
     let _messages = messages.filter(msg => new RegExp(msg.level).test(logLevel))
 
@@ -48,6 +60,17 @@ export default class ConsolePanel extends React.Component {
             <option value={LogLevel.WARN}>Warn</option>
             <option value={LogLevel.DEBUG}>Debug</option>
           </select>
+        </div>
+        <div className='ConsolePanel-setting'>
+          <div>
+            <label>
+              <input type='checkbox'
+                value={setting.isTimestampVisible}
+                onChange={e => this.toggleTimestampVisible()}
+              />
+              Show timestamps
+            </label>
+          </div>
         </div>
         <div className='xc-console-panel__content'>
           {/* <div>
@@ -73,7 +96,13 @@ export default class ConsolePanel extends React.Component {
           <div> <TextInlineBlock value={'hello'} /> </div>
           <div> <TextInlineBlock value={null} /> </div>
           <div> <TextInlineBlock value={undefined} /> </div> */}
-          {_messages.map(msg => <MessageBox key={msg.id} message={msg} />)}
+          {_messages.map(msg =>
+            <MessageBox
+              key={msg.id}
+              message={msg}
+              isTimestampVisible={setting.isTimestampVisible}
+            />
+          )}
         </div>
       </div>
     )
