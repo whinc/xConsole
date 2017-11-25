@@ -77,9 +77,9 @@
     "test": "node scripts/test.js --env=jsdom",
     "analyze": "source-map-explorer build/static/js/main.*",
     "prepublish": "npm run build",
-    "publish:major": "npm version major && npm publish --access=public",
-    "publish:minor": "npm version minor && npm publish --access=public",
-    "publish:patch": "npm version patch && npm publish --access=public",
+    "publish:major": "npm login && npm version major && npm publish --access=public",
+    "publish:minor": "npm login && npm version minor && npm publish --access=public",
+    "publish:patch": "npm login && npm version patch && npm publish --access=public",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
