@@ -1,16 +1,17 @@
 import React from 'react'
 import MessageBox from './MessageBox'
 import './ConsolePanel.css'
-import TextInlineBlock from './TextInlineBlock'
+// import TextInlineBlock from './TextInlineBlock'
 
 export default class ConsolePanel extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       messages: [],
-      setting: {
-        isTimestampVisible: false
-      },
+      // is setting panel visble
+      isSettingVisible: false,
+      // is timestamp enable
+      isTimestampEnable: false,
       logLevel: LogLevel.ALL
     }
   }
@@ -34,45 +35,59 @@ export default class ConsolePanel extends React.Component {
     })
   }
 
-  toggleTimestampVisible () {
+  toggleTimestampEnable () {
     this.setState({
-      setting: {
-        ...this.state.setting,
-        isTimestampVisible: !this.state.setting.isTimestampVisible
-      }
+      ...this.state,
+      isTimestampEnable: !this.state.isTimestampEnable
+    })
+  }
+
+  toggleSettingVisible () {
+    this.setState({
+      ...this.state,
+      isSettingVisible: !this.state.isSettingVisible
     })
   }
 
   render () {
-    const {messages, logLevel, setting} = this.state
+    const {messages, logLevel, isSettingVisible, isTimestampEnable} = this.state
 
     let _messages = messages.filter(msg => new RegExp(msg.level).test(logLevel))
 
     return (
-      <div className='xc-console-panel'>
-        <div className='xc-console-panel__toolbar'>
-          <span onClick={() => this.clearMessages()} className='fa fa-ban xc-console-panel__clear' />
-          <select value={logLevel} onChange={event => this.onChangeLogLevel(event.target.value)}>
-            <option value={LogLevel.ALL}>All</option>
-            <option value={LogLevel.LOG}>Log</option>
-            <option value={LogLevel.ERROR}>Error</option>
-            <option value={LogLevel.INFO}>Info</option>
-            <option value={LogLevel.WARN}>Warn</option>
-            <option value={LogLevel.DEBUG}>Debug</option>
-          </select>
-        </div>
-        <div className='ConsolePanel-setting'>
-          <div>
-            <label>
-              <input type='checkbox'
-                value={setting.isTimestampVisible}
-                onChange={e => this.toggleTimestampVisible()}
-              />
-              Show timestamps
-            </label>
+      <div className='ConsolePanel'>
+        <div className='ConsolePanel__toolbar ConsolePanel-toolbar'>
+          <div className='ConsolePanel-toolbar__clear'>
+            <span onClick={() => this.clearMessages()} className='fa fa-ban' />
+          </div>
+          <div className='ConsolePanel-toolbar__filter'>
+            <select value={logLevel} onChange={event => this.onChangeLogLevel(event.target.value)}>
+              <option value={LogLevel.ALL}>All</option>
+              <option value={LogLevel.LOG}>Log</option>
+              <option value={LogLevel.ERROR}>Error</option>
+              <option value={LogLevel.INFO}>Info</option>
+              <option value={LogLevel.WARN}>Warn</option>
+              <option value={LogLevel.DEBUG}>Debug</option>
+            </select>
+          </div>
+          <div className='ConsolePanel-toolbar__setting' onClick={e => this.toggleSettingVisible()}>
+            <span className='fa fa-cog' style={{color: isSettingVisible ? 'rgb(81, 128, 229)' : ''}} />
           </div>
         </div>
-        <div className='xc-console-panel__content'>
+        {isSettingVisible &&
+          <div className='ConsolePanel__setting'>
+            <div>
+              <label>
+                <input type='checkbox'
+                  value={isTimestampEnable}
+                  onChange={e => this.toggleTimestampEnable()}
+                />
+                Show timestamps
+            </label>
+            </div>
+          </div>
+        }
+        <div className='ConsolePanel__content'>
           {/* <div>
             <TextInlineBlock
               value={{
@@ -100,7 +115,7 @@ export default class ConsolePanel extends React.Component {
             <MessageBox
               key={msg.id}
               message={msg}
-              isTimestampVisible={setting.isTimestampVisible}
+              isTimestampVisible={isTimestampEnable}
             />
           )}
         </div>
