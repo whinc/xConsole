@@ -12,6 +12,7 @@ export default class ConsolePanel extends React.Component {
       isSettingVisible: false,
       // is timestamp enable
       isTimestampEnable: false,
+      filter: '',
       logLevel: LogLevel.ALL
     }
   }
@@ -35,6 +36,12 @@ export default class ConsolePanel extends React.Component {
     })
   }
 
+  changeFilter (value) {
+    this.setState({
+      filter: value
+    })
+  }
+
   toggleTimestampEnable () {
     this.setState({
       ...this.state,
@@ -50,9 +57,24 @@ export default class ConsolePanel extends React.Component {
   }
 
   render () {
-    const {messages, logLevel, isSettingVisible, isTimestampEnable} = this.state
+    const {messages, logLevel, filter, isSettingVisible, isTimestampEnable} = this.state
 
-    let _messages = messages.filter(msg => new RegExp(msg.level).test(logLevel))
+    // filte messages with the filter rules
+    let _messages = messages.filter(msg => {
+      let b1 = new RegExp(msg.level).test(logLevel)
+      let b2 = true
+      if (filter) {
+        // TODO: use the formated string to match instead of the origin arguments
+        const content = JSON.stringify(msg.texts)
+        // try match with regular expression, if it's failed use string search
+        try {
+          b2 = new RegExp(filter, 'i').test(content)
+        } catch (error) {
+          b2 = content.indexOf(filter) !== -1
+        }
+      }
+      return b1 && b2
+    })
 
     return (
       <div className='ConsolePanel'>
@@ -61,6 +83,7 @@ export default class ConsolePanel extends React.Component {
             <span onClick={() => this.clearMessages()} className='fa fa-ban' />
           </div>
           <div className='ConsolePanel-toolbar__filter'>
+            <input type='text' placeholder='Filter' value={filter} onChange={e => this.changeFilter(e.target.value)} />
             <select value={logLevel} onChange={event => this.onChangeLogLevel(event.target.value)}>
               <option value={LogLevel.ALL}>All</option>
               <option value={LogLevel.LOG}>Log</option>

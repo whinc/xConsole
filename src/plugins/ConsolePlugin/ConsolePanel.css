@@ -29,9 +29,16 @@
   flex: 0 0;
   padding: 5px;
 }
+
 .ConsolePanel-toolbar__filter {
   flex: 1 1;
+  display: flex;
 }
+
+.ConsolePanel-toolbar__empty {
+  flex: 1 1;
+}
+
 .ConsolePanel-toolbar__setting {
   flex: 0 0;
   padding: 5px;
