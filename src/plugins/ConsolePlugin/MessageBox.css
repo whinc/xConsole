@@ -41,7 +41,7 @@
 
 .MessageBox__item {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 .MessageBox__item--timestamp {

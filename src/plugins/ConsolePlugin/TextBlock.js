@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import isObject from 'lodash.isobject'
-import isArray from 'lodash.isarray'
 import isBoolan from 'lodash.isboolean'
 import isString from 'lodash.isstring'
 import isNumber from 'lodash.isnumber'
@@ -261,7 +260,7 @@ export default class TextBlock extends React.Component {
                 <TextInlineBlock
                   name={name}
                   value={value}
-                  depth={(isFolded || !name) ? 1 : 0}
+                  depth={isFolded ? 1 : 0}
                 />
                 {/* {this.createSummary(value, name, isFolded)} */}
               </span>

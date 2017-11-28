@@ -88,8 +88,7 @@
             value: 'g',
             writable: false
           })
-          console.warn(a)
-          console.warn([
+          var b = [
             1,
             [
               2,
@@ -103,7 +102,8 @@
               'b'
             ],
             'a'
-          ])
+          ]
+          console.warn('head', a, 'middle', b, 'tail')
           console.warn('[test] warn', true, 99, undefined, null )
           var f1 = function(){a = function() {}}
           var f2 = () => {b = () => {}}

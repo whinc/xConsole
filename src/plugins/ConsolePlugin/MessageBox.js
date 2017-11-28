@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import isObject from 'lodash.isobject'
-import isArray from 'lodash.isarray'
 import isBoolan from 'lodash.isboolean'
 import isString from 'lodash.isstring'
 import isNumber from 'lodash.isnumber'
@@ -9,6 +8,7 @@ import isNull from 'lodash.isnull'
 import isUndefined from 'lodash.isundefined'
 import './MessageBox.css'
 import TextBlock from './TextBlock'
+import Space from './Space'
 
 /**
  * Display a message which may includes one line or multi-line
@@ -120,6 +120,7 @@ export default class MessageBox extends React.Component {
         {texts.map((value, index) =>
           <div key={index} className='MessageBox__item'>
             <TextBlock value={value} />
+            <Space />
           </div>
         )}
       </div>
