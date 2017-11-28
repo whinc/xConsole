@@ -8,11 +8,14 @@ export default class ConsolePanel extends React.Component {
     super(props)
     this.state = {
       messages: [],
-      // is setting panel visble
+      // flag indicate if setting panel visble
       isSettingVisible: false,
-      // is timestamp enable
+      // flag indicate if timestamp enable
       isTimestampEnable: false,
+      // filter string
       filter: '',
+      // javascript code enter by user
+      jsCode: '',
       logLevel: LogLevel.ALL
     }
   }
@@ -42,6 +45,12 @@ export default class ConsolePanel extends React.Component {
     })
   }
 
+  changeJSCode (code) {
+    this.setState({
+      jsCode: code
+    })
+  }
+
   toggleTimestampEnable () {
     this.setState({
       ...this.state,
@@ -56,8 +65,16 @@ export default class ConsolePanel extends React.Component {
     })
   }
 
+  executeJSCode () {
+    try {
+      eval(this.state.jsCode)
+    } catch (error) {
+      window.xConsole.commands.dispatch('console:error', {texts: [error]})
+    }
+  }
+
   render () {
-    const {messages, logLevel, filter, isSettingVisible, isTimestampEnable} = this.state
+    const {messages, logLevel, filter, isSettingVisible, isTimestampEnable, jsCode} = this.state
 
     // filte messages with the filter rules
     let _messages = messages.filter(msg => {
@@ -75,6 +92,11 @@ export default class ConsolePanel extends React.Component {
       }
       return b1 && b2
     })
+
+    let rows = 0
+    if (jsCode) {
+      rows = jsCode.split('').reduce((n, c) => c === '\n' ? ++n : n, 0) + 1
+    }
 
     return (
       <div className='ConsolePanel'>
@@ -141,6 +163,16 @@ export default class ConsolePanel extends React.Component {
               isTimestampVisible={isTimestampEnable}
             />
           )}
+          <div className='ConsolePanel-expression'>
+            <textarea
+              value={jsCode}
+              onChange={e => this.changeJSCode(e.target.value)}
+              rows={Math.max(rows, 2)}
+              placeholder='Enter expression here'
+              className='ConsolePanel-expression__input'
+            />
+            <button className='ConsolePanel-expression__button' onClick={e => this.executeJSCode()}>exec</button>
+          </div>
         </div>
       </div>
     )

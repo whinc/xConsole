@@ -43,3 +43,20 @@
   flex: 0 0;
   padding: 5px;
 }
+
+.ConsolePanel-expression {
+  display: flex;
+  padding-right: 5px;
+  margin-top: 2px;
+}
+
+.ConsolePanel-expression__input {
+  flex: 1 0;
+  padding: 0px 5px;
+  margin-right: 5px;
+  resize: none;
+}
+
+.ConsolePanel-expression__button {
+  flex: 0 0;
+}
