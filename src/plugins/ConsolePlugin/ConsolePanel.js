@@ -1,6 +1,7 @@
 import React from 'react'
 import MessageBox from './MessageBox'
 import './ConsolePanel.css'
+import {withSandbox} from './utils'
 // import TextInlineBlock from './TextInlineBlock'
 
 export default class ConsolePanel extends React.Component {
@@ -66,8 +67,17 @@ export default class ConsolePanel extends React.Component {
   }
 
   executeJSCode () {
+    const {jsCode} = this.state
+    if (!jsCode) return
+
     try {
-      eval(this.state.jsCode)
+      const sandbox = {
+        '$': window.document.querySelector || (() => null),
+        '$$': window.document.querySelectorAll || (() => null)
+      }
+      const newJsCode = withSandbox(jsCode, sandbox)
+      const result = eval(newJsCode)
+      console.log(result)
     } catch (error) {
       window.xConsole.commands.dispatch('console:error', {texts: [error]})
     }
@@ -163,6 +173,7 @@ export default class ConsolePanel extends React.Component {
               isTimestampVisible={isTimestampEnable}
             />
           )}
+          {/* input and valuate javascript expression */}
           <div className='ConsolePanel-expression'>
             <textarea
               value={jsCode}
