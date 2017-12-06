@@ -1,6 +1,7 @@
 import React from 'react'
 import Plugin from '../Plugin'
 import ConsolePanel from './ConsolePanel'
+import ErrorBoundary from './ErrorBoundary'
 
 /**
  * Display messages from console.
@@ -148,10 +149,12 @@ export default class ConsolePlugin extends Plugin {
 
   render () {
     return (
-      <ConsolePanel
-        messages={this._getAndClearMessages()}
-        ref={ref => (this.ref = ref)}
-      />
+      <ErrorBoundary>
+        <ConsolePanel
+          messages={this._getAndClearMessages()}
+          ref={ref => (this.ref = ref)}
+        />
+      </ErrorBoundary>
     )
   }
 }

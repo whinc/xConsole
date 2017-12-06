@@ -7,6 +7,7 @@ import isNumber from 'lodash.isnumber'
 import isNull from 'lodash.isnull'
 import isUndefined from 'lodash.isundefined'
 import './MessageBox.css'
+import ErrorBoundary from './ErrorBoundary'
 import TextBlock from './TextBlock'
 import Space from './Space'
 
@@ -119,7 +120,9 @@ export default class MessageBox extends React.Component {
         )}
         {texts.map((value, index) =>
           <div key={index} className='MessageBox__item'>
-            <TextBlock value={value} />
+            <ErrorBoundary>
+              <TextBlock value={value} />
+            </ErrorBoundary>
             <Space />
           </div>
         )}

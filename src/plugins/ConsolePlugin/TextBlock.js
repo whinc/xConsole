@@ -10,6 +10,7 @@ import isFunction from 'lodash.isfunction'
 import isSymbol from 'lodash.issymbol'
 import './TextBlock.css'
 import TextInlineBlock from './TextInlineBlock'
+import ErrorBoundary from './ErrorBoundary'
 
 const INDENT = 5
 
@@ -232,11 +233,13 @@ export default class TextBlock extends React.Component {
             {name && <span className='TextBlock__separator'>{': '}</span>}
             <span className={valueClass}>
               {/* {this.createSummary(value, name, true)} */}
-              <TextInlineBlock
-                name={name}
-                value={value}
-                depth={0}
-              />
+              <ErrorBoundary>
+                <TextInlineBlock
+                  name={name}
+                  value={value}
+                  depth={0}
+                />
+              </ErrorBoundary>
             </span>
           </span>
         )
@@ -257,11 +260,13 @@ export default class TextBlock extends React.Component {
               {name && <span className={nameClass}>{name}</span>}
               {name && <span className='TextBlock__separator'>{': '}</span>}
               <span className={valueClass}>
-                <TextInlineBlock
-                  name={name}
-                  value={value}
-                  depth={isFolded ? 1 : 0}
-                />
+                <ErrorBoundary>
+                  <TextInlineBlock
+                    name={name}
+                    value={value}
+                    depth={isFolded ? 1 : 0}
+                  />
+                </ErrorBoundary>
                 {/* {this.createSummary(value, name, isFolded)} */}
               </span>
             </span>

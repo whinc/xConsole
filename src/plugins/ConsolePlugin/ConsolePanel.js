@@ -1,7 +1,7 @@
 import React from 'react'
 import MessageBox from './MessageBox'
 import './ConsolePanel.css'
-import {withSandbox} from './utils'
+import ErrorBoundary from './ErrorBoundary'
 // import TextInlineBlock from './TextInlineBlock'
 
 export default class ConsolePanel extends React.Component {
@@ -71,12 +71,9 @@ export default class ConsolePanel extends React.Component {
     if (!jsCode) return
 
     try {
-      const sandbox = {
-        '$': window.document.querySelector || (() => null),
-        '$$': window.document.querySelectorAll || (() => null)
-      }
-      const newJsCode = withSandbox(jsCode, sandbox)
-      const result = eval(newJsCode)
+      const $ = window.document.querySelector.bind(window.document) || (() => null)
+      const $$ = window.document.querySelectorAll.bind(window.document) || (() => null)
+      const result = eval(jsCode)
       console.log(result)
     } catch (error) {
       window.xConsole.commands.dispatch('console:error', {texts: [error]})
@@ -167,11 +164,12 @@ export default class ConsolePanel extends React.Component {
           <div> <TextInlineBlock value={null} /> </div>
           <div> <TextInlineBlock value={undefined} /> </div> */}
           {_messages.map(msg =>
-            <MessageBox
-              key={msg.id}
-              message={msg}
-              isTimestampVisible={isTimestampEnable}
-            />
+            <ErrorBoundary key={msg.id}>
+              <MessageBox
+                message={msg}
+                isTimestampVisible={isTimestampEnable}
+              />
+            </ErrorBoundary>
           )}
           {/* input and valuate javascript expression */}
           <div className='ConsolePanel-expression'>
