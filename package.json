@@ -53,7 +53,10 @@
       "fetch",
       "URL",
       "it",
-      "xConsole"
+      "xConsole",
+      "describe",
+      "test",
+      "expect"
     ]
   },
   "config": {
