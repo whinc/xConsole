@@ -1,8 +1,6 @@
 import React from 'react'
-import MessageBox from './MessageBox'
 import './ConsolePanel.css'
-import ErrorBoundary from './ErrorBoundary'
-// import TextInlineBlock from './TextInlineBlock'
+import {ErrorBoundary, MessageBox} from './components'
 
 export default class ConsolePanel extends React.Component {
   constructor (props) {

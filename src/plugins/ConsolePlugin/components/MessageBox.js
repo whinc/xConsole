@@ -115,16 +115,17 @@ export default class MessageBox extends React.Component {
       <div className={`MessageBox MessageBox--${level}`}>
         {isTimestampVisible && (
           <span className='MessageBox__item MessageBox__item--timestamp'>
-            {this.formatDate(timestamp) + ' '}
+            {this.formatDate(timestamp)}
+            <Space />
           </span>
         )}
         {texts.map((value, index) =>
-          <div key={index} className='MessageBox__item'>
-            <ErrorBoundary>
+          <ErrorBoundary key={index}>
+            <div className='MessageBox__item'>
               <TextBlock value={value} />
-            </ErrorBoundary>
-            <Space />
-          </div>
+              <Space />
+            </div>
+          </ErrorBoundary>
         )}
       </div>
     )
