@@ -1,6 +1,12 @@
 import isString from 'lodash.isstring'
 import isNumber from 'lodash.isnumber'
 
+/**
+ * return formated string
+ * reference to <https://developers.google.cn/web/tools/chrome-devtools/console/console-write#string_substitution_and_formatting>
+ * usage example:
+ * format('%s + %s = %s', 1, 2, 1 + 2)  // return ['1 + 2 = 3']
+ */
 export function format () {
   const r = _format(...arguments)
   // concat continuous string
@@ -24,7 +30,7 @@ export function format () {
  * --> ['1', '2', ...format('a')]
  * --> ['1', '2', 'a']
  */
-export function _format (f) {
+function _format (f) {
   if (!isString(f)) {
     return arguments.length === 0 ? [] : [...arguments]
   }

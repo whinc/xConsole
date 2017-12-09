@@ -1,6 +1,7 @@
 import React from 'react'
 import Plugin from '../Plugin'
 import ConsolePanel from './ConsolePanel'
+import {format} from './utils'
 
 /**
  * Display messages from console.
@@ -61,7 +62,7 @@ export default class ConsolePlugin extends Plugin {
     const message = {
       id: this._genId(),
       timestamp,
-      texts,
+      texts: format(...texts),
       level
     }
 
