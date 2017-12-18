@@ -1,1 +1,21 @@
-@import '../../index.css'
+.NetworkPanel {
+  display: flex;
+  flex-direction: column;
+}
+
+.NetworkPanel__header {
+  display: flex;
+}
+
+.NetworkPanel__row {
+  display: flex;
+}
+
+.NetworkPanel__item {
+  flex: 0 0 15%;
+  padding: 0 5px;
+}
+
+.NetworkPanel__item--grow {
+  flex: 1 1
+}

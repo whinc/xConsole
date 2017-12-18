@@ -42,7 +42,8 @@ export default class NetworkPlugin extends Plugin {
         utils.set(xhr, 'hasHookSendMethod', true)
         self.handleXMLHttpRequestSend(xhr, body)
         setTimeout(() => {
-          // 延迟 hook onreadystatechange 方法，因为用户可能在 send 调用之后设置该方法
+          // hook 'onreonreadystatechange' in next event loop because of user may
+          // setup 'onreonreadystatechange' handler after send method has been called
           const _onreadystatechange = xhr.onreadystatechange
           xhr.onreadystatechange = function (event) {
             const xhr = this

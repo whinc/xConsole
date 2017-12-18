@@ -17,24 +17,22 @@ export default class NetworkPluginPanel extends React.Component {
     const {requestMap} = this.state
 
     return (
-      <div style={{height: '60vh'}}>
-        <div className='xcui-rows'>
-          <div className='xc-rows__item xc-cols'>
-            <span className='xc-cols__item xc--text-center'>Name</span>
-            <span className='xc-cols__item xc-cols__item--15 xc--text-center'>Method</span>
-            <span className='xc-cols__item xc-cols__item--15 xc--text-center'>Status</span>
-          </div>
-          {Object.keys(requestMap).map(id => {
-            const req = requestMap[id]
-            return (
-              <div className='xc-rows__item xc-cols' key={id}>
-                <span className='xc-cols__item'>{req.url}</span>
-                <span className='xc-cols__item xc-cols__item--15 xc--text-center'>{req.method}</span>
-                <span className='xc-cols__item xc-cols__item--15 xc--text-center'>{req.status !== undefined ? req.status : '--'}</span>
-              </div>
-            )
-          })}
+      <div style={{ height: '60vh' }} className='NetworkPanel'>
+        <div className='NetworkPanel__header'>
+          <span className='NetworkPanel__item NetworkPanel__item--grow'>Name</span>
+          <span className='NetworkPanel__item'>Method</span>
+          <span className='NetworkPanel__item'>Status</span>
         </div>
+        {Object.keys(requestMap).map(id => {
+          const req = requestMap[id]
+          return (
+            <div className='NetworkPanel__row' key={id}>
+              <span className='NetworkPanel__item NetworkPanel__item--grow'>{req.url}</span>
+              <span className='NetworkPanel__item'>{req.method}</span>
+              <span className='NetworkPanel__item'>{req.status !== undefined ? req.status : '--'}</span>
+            </div>
+          )
+        })}
       </div>
     )
   }
