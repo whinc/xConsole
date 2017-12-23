@@ -1,5 +1,6 @@
 import React from 'react'
 import './NetworkPanel.css'
+import {Table, SidePanel} from './components'
 
 export default class NetworkPluginPanel extends React.Component {
   constructor (props) {
@@ -9,43 +10,43 @@ export default class NetworkPluginPanel extends React.Component {
        * 请求信息
        * @type {{[id: string]: {id: string, url: string, method: string, status: number}}}
        */
-      requestMap: props.requestMap || {}
+      requestMap: props.requestMap || {},
+      selectedEntry: null,
+      isSidePanelOpen: false
     }
   }
 
-  parseUrl (url) {
-    if (typeof url !== 'string') return String(url)
+  closeSidePanel () {
+    this.setState({
+      isSidePanelOpen: false,
+      selectedEntry: null
+    })
+  }
 
-    const lastSlashIndex = url.lastIndexOf('/')
-    const name = url.substr(lastSlashIndex + 1)
-
-    return {name}
+  openSidePanel (entry) {
+    this.setState({
+      isSidePanelOpen: true,
+      selectedEntry: entry
+    })
   }
 
   render () {
-    const {requestMap} = this.state
+    const {requestMap, isSidePanelOpen, selectedEntry} = this.state
 
-    const count = Object.keys(requestMap).length
     return (
-      <div style={{ height: '60vh' }} className='NetworkPanel'>
-        <div className='NetworkPanel__header'>
-          <span className='NetworkPanel__item NetworkPanel__item--grow'>
-            Name{count > 0 ? `(${count})` : ''}
-          </span>
-          <span className='NetworkPanel__item'>Method</span>
-          <span className='NetworkPanel__item'>Status</span>
-        </div>
-        {Object.keys(requestMap).map(id => {
-          const req = requestMap[id]
-          const {name} = this.parseUrl(req.url)
-          return (
-            <div className='NetworkPanel__row' key={id}>
-              <span className='NetworkPanel__item NetworkPanel__item--grow'>{name}</span>
-              <span className='NetworkPanel__item'>{req.method}</span>
-              <span className='NetworkPanel__item'>{req.status !== undefined ? req.status : '--'}</span>
-            </div>
-          )
-        })}
+      <div className='NetworkPanel'>
+        <Table
+          entries={Object.keys(requestMap).map(key => requestMap[key])}
+          onClickEntry={entry => this.openSidePanel(entry)}
+        />
+        {isSidePanelOpen &&
+          <div className='NetworkPanel__detail' >
+            <SidePanel
+              entry={selectedEntry}
+              onClose={() => this.closeSidePanel()}
+            />
+          </div>
+        }
       </div>
     )
   }

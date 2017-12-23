@@ -1,0 +1,24 @@
+.Table {
+}
+
+.Table__header {
+  display: flex;
+}
+
+.Table__content {
+  height: 60vh;
+  overflow-y: scroll;
+}
+
+.Table__row {
+  display: flex;
+}
+
+.Table__item {
+  flex: 0 0 15%;
+  padding: 0 5px;
+}
+
+.Table__item--grow {
+  flex: 1 1
+}

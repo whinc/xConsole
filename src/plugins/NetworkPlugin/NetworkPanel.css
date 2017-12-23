@@ -1,6 +1,6 @@
 .NetworkPanel {
-  display: flex;
-  flex-direction: column;
+  position: relative;
+  height: 60vh;
 }
 
 .NetworkPanel__header {
@@ -18,4 +18,12 @@
 
 .NetworkPanel__item--grow {
   flex: 1 1
+}
+
+.NetworkPanel__detail {
+  position: absolute;
+  height: 100%;
+  width: 85%;
+  top: 0;
+  right: 0;
 }
