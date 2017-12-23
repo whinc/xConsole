@@ -16,10 +16,13 @@ export default class NetworkPluginPanel extends React.Component {
   render () {
     const {requestMap} = this.state
 
+    const count = Object.keys(requestMap).length
     return (
       <div style={{ height: '60vh' }} className='NetworkPanel'>
         <div className='NetworkPanel__header'>
-          <span className='NetworkPanel__item NetworkPanel__item--grow'>Name</span>
+          <span className='NetworkPanel__item NetworkPanel__item--grow'>
+            Name{count > 0 ? `(${count})` : ''}
+          </span>
           <span className='NetworkPanel__item'>Method</span>
           <span className='NetworkPanel__item'>Status</span>
         </div>
