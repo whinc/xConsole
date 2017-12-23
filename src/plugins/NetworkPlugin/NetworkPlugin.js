@@ -88,12 +88,13 @@ export default class NetworkPlugin extends Plugin {
     if (!id || !req) return
     req.id = id
 
-    // if ui has been created, concat the request info
+    // if ui has been created, concat the request info stored in ui state
     if (this.ui) {
-      this.requestMap = {...this.requestMap, ...this.ui.state.requestMap}
+      this.requestMap = {...this.ui.state.requestMap, ...this.requestMap}
     }
 
-    // 如果请求不存在则添加，否则更新请求信息
+    // create a new request entry if the request id doesn't exist
+    // otherwise update the found request entry
     const foundRequest = this.requestMap[id]
     if (!foundRequest) {
       this.requestMap[id] = req

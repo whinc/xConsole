@@ -13,6 +13,15 @@ export default class NetworkPluginPanel extends React.Component {
     }
   }
 
+  parseUrl (url) {
+    if (typeof url !== 'string') return String(url)
+
+    const lastSlashIndex = url.lastIndexOf('/')
+    const name = url.substr(lastSlashIndex + 1)
+
+    return {name}
+  }
+
   render () {
     const {requestMap} = this.state
 
@@ -28,9 +37,10 @@ export default class NetworkPluginPanel extends React.Component {
         </div>
         {Object.keys(requestMap).map(id => {
           const req = requestMap[id]
+          const {name} = this.parseUrl(req.url)
           return (
             <div className='NetworkPanel__row' key={id}>
-              <span className='NetworkPanel__item NetworkPanel__item--grow'>{req.url}</span>
+              <span className='NetworkPanel__item NetworkPanel__item--grow'>{name}</span>
               <span className='NetworkPanel__item'>{req.method}</span>
               <span className='NetworkPanel__item'>{req.status !== undefined ? req.status : '--'}</span>
             </div>
