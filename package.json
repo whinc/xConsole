@@ -83,9 +83,7 @@
     "prepublish": "npm run build",
     "publish:major": "npm login && npm version major && npm publish --access=public",
     "publish:minor": "npm login && npm version minor && npm publish --access=public",
-    "publish:patch": "npm login && npm version patch && npm publish --access=public",
-    "predeploy": "echo",
-    "deploy": "gh-pages -d public"
+    "publish:patch": "npm login && npm version patch && npm publish --access=public"
   },
   "standard": {
     "parser": "babel-eslint",

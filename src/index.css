@@ -62,7 +62,7 @@
 .xc-panel__content {
   display: flex;
   flex-direction: column;
-  height: 60vh;
+  height: 80vh;
 }
 
 .xc-tab-panel {

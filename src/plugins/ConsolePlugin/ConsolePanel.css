@@ -1,5 +1,5 @@
 .ConsolePanel {
-  height: 60vh;
+  height: 80vh;
   display: flex;
   flex-direction: column;
 }
@@ -10,7 +10,7 @@
 }
 
 .ConsolePanel__content{
-  flex: 1 1 calc(60vh - 20px);
+  flex: 1 1 calc(80vh - 20px);
   overflow-y: scroll;
 }
 

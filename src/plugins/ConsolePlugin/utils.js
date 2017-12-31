@@ -54,7 +54,7 @@ function _format (f) {
       r.push(String(replacer))
     } else if (specifier === '%i' || specifier === '%d') {
       if (isNumber(replacer)) {
-        r.push(parseInt(replacer))
+        r.push(parseInt(replacer, 10))
       } else {
         r.push(NaN)
       }

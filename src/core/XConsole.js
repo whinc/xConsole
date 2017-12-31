@@ -56,6 +56,8 @@ class XConsole {
     this.commands.add('xconsole:hide', () => this._hidePanel())
 
     this._showEntry()
+
+    this._isInit = true
   }
 
   /**

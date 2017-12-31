@@ -62,11 +62,11 @@ export default class NetworkPlugin extends Plugin {
   }
 
   handleXMLHttpRequestSend (xhr, body) {
-    console.log('send:', body)
+    // console.log('send:', body)
   }
 
   handleXMLHttpRequestOpen (xhr, method, url, async, username, password) {
-    console.log('open: ', method, url, async, username, password)
+    // console.log('open: ', method, url, async, username, password)
 
     const id = uuid()
     utils.set(xhr, 'id', id)
@@ -76,7 +76,7 @@ export default class NetworkPlugin extends Plugin {
   }
 
   handleXMLHttpRequestReadStateChange (xhr, event) {
-    console.log('onreadystatechange: %O', event)
+    // console.log('onreadystatechange: %O', event)
     this.addOrUpdateRequest(utils.get(xhr, 'id'), { status: xhr.status })
   }
 
