@@ -9,7 +9,7 @@ import isUndefined from 'lodash.isundefined'
 import './MessageBox.css'
 import ErrorBoundary from './ErrorBoundary'
 import TextBlock from './TextBlock'
-import Space from './Space'
+import {Space} from '../../components'
 
 /**
  * Display a message which may includes one line or multi-line

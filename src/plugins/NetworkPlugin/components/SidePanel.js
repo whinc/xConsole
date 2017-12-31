@@ -2,6 +2,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import './SidePanel.css'
+import {Space} from '../../components'
 
 export default class SidePanel extends React.Component {
   static propTypes = {
@@ -27,13 +28,17 @@ export default class SidePanel extends React.Component {
     return (
       <div className='SidePanel'>
         <div className='SidePanel__header'>
-          <span onClick={onClose}>Close</span>
+          <span className='fa fa-times' onClick={onClose} />
           <span>Headers</span>
         </div>
         <div className='SidePanel__content'>
-          <p>General</p>
+          <p style={{fontWeight: 'bold', margin: 0}}>General</p>
           {Object.keys(general).map(key =>
-            <p key={key}>{`${key}: ${general[key]}`}</p>
+            <p key={key} style={{margin: 0}}>
+              <Space count={4} />
+              <span style={{fontWeight: 'bold'}}>{key}:</span>
+              <span>{general[key]}</span>
+            </p>
           )}
         </div>
       </div>
