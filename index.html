@@ -1,139 +1,81 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name="theme-color" content="#000000"><link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet"><link rel="manifest" href="/xConsole/manifest.json"><link rel="shortcut icon" href="/xConsole/favicon.ico"><title>React App</title><script type="text/javascript">function sendXHR () {
-        var xhr = new XMLHttpRequest()
-        xhr.onreadystatechange = function () {
-          if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-              console.log(xhr.responseText)
-            } else {
-              console.error(xhr.statusText)
-            }
-          }
-        }
-        xhr.open('GET', 'https://api.github.com/users/octocat/orgs', true, 'a', 'b')
-        xhr.send('hello')
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+    <!--
+      manifest.json provides metadata used when your web app is added to the
+      homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
 
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+    <!-- <script src="http://wechatfe.github.io/vconsole/lib/vconsole.min.js?v=3.0.0.0"></script> -->
+    <script src="https://unpkg.com/@whinc/xconsole@0.4"></script>
+    <script src='./demo.js'></script>
+    <style>
+      @font-face {
+        font-family: FontAwesome;
+        src: url('./media/fontawesome-webfont.b06871f2.ttf');
       }
-
-        // 测试用例2
-        // 1. onreadystatechange 在 send 之后设置
-      function sendXHR2 () {
-        var xhr = new XMLHttpRequest()
-        xhr.open('GET', 'https://api.github.com/users/whinc')
-        xhr.send('hello')
-        xhr.onreadystatechange = function () {
-          if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-              console.log(xhr.responseText)
-            } else {
-              console.error(xhr.statusText)
-            }
-          }
-        }
+      button {
+        margin-top: 1em;
+        min-height: 2em;
+        background-color: white;
+        border-radius: 4px;
+        border: 1px solid #ededed;
+        outline: none;
       }
-
-      window.onerror = function () {
-        console.log('window.onerror handler')
+      button:active {
+        background-color: #ededed;
       }
+    </style>
+  </head>
+  <body>
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <div style='padding: 1rem;'>
+      <div>
+        <button onclick="console.log('Log')">console.log('Log')</button>
+      </div>
+      <div>
+        <button onclick="console.info('Info')">console.info('Info')</button>
+      </div>
+      <div>
+        <button onclick="console.warn('Warn')">console.warn('Warn')</button>
+      </div>
+      <div>
+        <button onclick="console.error('Error')">console.error('Error')</button>
+      </div>
+      <div>
+        <button onclick="sendXHR()">Send XHR</button>
+      </div>
+      <!-- <div class="field">
+            <div class="control">
+              <button class='button is-debug' onclick="console.debug('Debug')">console.debug('Debug')</button>
+            </div>
+          </div> -->
+    </div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
 
-      addEventListener('DOMContentLoaded', function () {
-        if (window.xConsole) {
-          xConsole.init()
-          // test console plugin
-          // console.log('[test] log')
-          // console.info('[test] info')
-          var a = {
-            a1: 1,
-            a2: {
-              b1: '1',
-              b2: true
-            },
-            [Symbol('c')]: null
-          }
-          Object.defineProperty(a, 'd', {
-            get: function d () { return {d1: 1, d2: 2}},
-          })
-          Object.defineProperty(a, 'e', {
-            get: function e () { return 'e'},
-            set: function e (v) {this._e = v}
-          })
-          Object.defineProperty(a, 'f', {
-            value: undefined
-          })
-          Object.defineProperty(a, 'g', {
-            value: 'g',
-            writable: false
-          })
-          console.warn(a)
-          console.warn([
-            1,
-            [
-              2,
-              [
-                3,
-                [
-                  4, 'd'
-                ],
-                'c'
-              ],
-              'b'
-            ],
-            'a'
-          ])
-          console.warn('[test] warn', true, 99, undefined, null )
-          var f1 = function(){a = function() {}}
-          var f2 = () => {b = () => {}}
-          var f3 = Array.prototype.fill
-          console.warn(f1, f2, f3, {a: f1})
-          // console.error('[test] error')
-          // console.debug('[test] debug')
-          // xConsole.commands.dispatch('console:log', {texts: ['[test] dispatch command log']})
-          // xConsole.commands.dispatch('console:info', {texts: ['[test] dispatch command info']})
-          // xConsole.commands.dispatch('console:warn', {texts: ['[test] dispatch command warn']})
-          // xConsole.commands.dispatch('console:error', {texts: ['[test] dispatch command error']})
-          // xConsole.commands.dispatch('console:debug', {texts: ['[test] dispatch command debug']})
-          // test add plugin
-          // xConsole.plugins.add({
-          //   id: 'xConsole:Storage',
-          //   name: 'Storage',
-          //   render() {
-          //     var h = React.createElement.bind(React)
-          //     return (
-          //       h('div', {},
-          //         h('h1', {}, 'Storage'),
-          //         h('ul', {},
-          //           h('li', {}, 'LocalStorage'),
-          //           h('li', {}, 'SessionStorage')
-          //         )
-          //       )
-          //     )
-          //   },
-          //   onInit () {
-          //     console.log(`[StoragePlugin] onInit() called`)
-          //   },
-          //   onReady () {
-          //     console.log(`[StoragePlugin] onReady() called`)
-          //   },
-          //   onXConsoleShow() {
-          //     console.log(`[StoragePlugin] onXConsoleShow() called`)
-          //   },
-          //   onXConsoleHide() {
-          //     console.log(`[StoragePlugin] onXConsoleHide() called`)
-          //   },
-          //   onShow() {
-          //     console.log(`[StoragePlugin] onShow() called`)
-          //   },
-          //   // Plugin is going to be hidden
-          //   onHide() {
-          //     console.log(`[StoragePlugin] onHide() called`)
-          //   }
-          // })
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
 
-          // setTimeout(function () {
-          //   Promise.reject('[test] capture promise unhandle rejection error')
-          // }, 0)
-
-          // setTimeout(function () {
-          //   throw new Error('[test] capture global error')
-          // }, 0)
-        }
-      })</script><link href="/xConsole/static/css/main.a048e308.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root">React</div><div><button onclick="sendXHR()">Send XHR</button></div><div><button onclick="sendXHR2()">Send XHR 2</button></div><script type="text/javascript"></script><script type="text/javascript" src="/xConsole/static/js/main.0525133c.js"></script></body></html>
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
