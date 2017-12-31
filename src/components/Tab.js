@@ -12,7 +12,7 @@ export default class Tab extends Component {
     children: PropTypes.arrayOf(PropTypes.element)
   }
   render () {
-    return <div style={{ height: this.props._visible ? '60vh' : '0px', overflowY: 'auto' }}>
+    return <div style={{ height: this.props._visible ? '80vh' : '0px', overflowY: 'auto' }}>
       {this.props.children}
     </div>
   }
