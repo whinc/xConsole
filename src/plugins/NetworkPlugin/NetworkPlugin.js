@@ -19,68 +19,65 @@ export default class NetworkPlugin extends Plugin {
   }
 
   hookXMLHttpRequest () {
+    const self = this
     const XMLHttpRequest = window.XMLHttpRequest
     const _send = XMLHttpRequest.prototype.send
     const _open = XMLHttpRequest.prototype.open
 
-    const hookOnreadystatechange = (xhr, ...args) => {
-      const [event] = args
-      console.log('onreadystatechange: %O', event)
-      this.addOrUpdateRequest(xhr.$id, { status: xhr.status })
-    }
-
-    const hookOpen = (xhr, ...args) => {
-      const [method, url, async = true, username = null, password = null] = args
-      console.log('open: ', method, url, async, username, password)
-
-      const id = uuid()
-      xhr.$id = id
-      xhr.$method = method
-      xhr.$url = url
-      this.addOrUpdateRequest(id, { url, method })
-    }
-
-    const hookSend = (xhr, ...args) => {
-      const [body = null] = args
-      console.log('send:', body)
-    }
-
-    XMLHttpRequest.prototype.open = function (...args) {
+    XMLHttpRequest.prototype.open = function (method, url, async, username, password) {
       const xhr = this
-      if (!xhr.$isHookOpen) {
-        xhr.$isHookOpen = true
-        hookOpen(xhr, ...args)
+      if (!utils.get(xhr, 'hasHookOpenMethod')) {
+        utils.set(xhr, 'hasHookOpenMethod', true)
+        self.handleXMLHttpRequestOpen(xhr, method, url, async, username, password)
       }
 
-      _open.call(xhr, ...args)
+      // call origin open method with passed arguments
+      _open.call(xhr, ...arguments)
     }
 
-    XMLHttpRequest.prototype.send = function (...args) {
+    XMLHttpRequest.prototype.send = function (body) {
       const xhr = this
       // Hook once
-      if (!xhr.$isHookSend) {
-        xhr.$isHookSend = true
-        hookSend(xhr, ...args)
+      if (!utils.get(xhr, 'hasHookSendMethod')) {
+        utils.set(xhr, 'hasHookSendMethod', true)
+        self.handleXMLHttpRequestSend(xhr, body)
         setTimeout(() => {
-          // 延迟 hook onreadystatechange 方法，因为用户可能在 send 调用之后设置该方法
+          // hook 'onreonreadystatechange' in next event loop because of user may
+          // setup 'onreonreadystatechange' handler after send method has been called
           const _onreadystatechange = xhr.onreadystatechange
-
-          if (xhr.$isHookOnreadystatechange === true) return
-
-          xhr.onreadystatechange = function (...args) {
+          xhr.onreadystatechange = function (event) {
             const xhr = this
             if (isFunction(_onreadystatechange)) {
-              _onreadystatechange.call(xhr, ...args)
+              _onreadystatechange.call(xhr, ...arguments)
             }
-            hookOnreadystatechange(xhr, ...args)
+            self.handleXMLHttpRequestReadStateChange(xhr, event)
           }
 
-          _send.call(xhr, ...args)
+          _send.call(xhr, ...arguments)
         }, 0)
       } else {
-        _send.call(xhr, ...args)
+        _send.call(xhr, ...arguments)
       }
     }
+  }
+
+  handleXMLHttpRequestSend (xhr, body) {
+    console.log('send:', body)
+  }
+
+  handleXMLHttpRequestOpen (xhr, method, url, async, username, password) {
+    console.log('open: ', method, url, async, username, password)
+
+    const id = uuid()
+    utils.set(xhr, 'id', id)
+    utils.set(xhr, 'method', method)
+    utils.set(xhr, 'url', url)
+    this.addOrUpdateRequest(id, { url, method })
+  }
+
+  handleXMLHttpRequestReadStateChange (xhr, event) {
+    console.log('onreadystatechange: %O', event)
+    this.addOrUpdateRequest(utils.get(xhr, 'id'), { status: xhr.status })
   }
 
   hookFetch () {
@@ -91,12 +88,13 @@ export default class NetworkPlugin extends Plugin {
     if (!id || !req) return
     req.id = id
 
-    // 全部放到缓冲区进行操作
+    // if ui has been created, concat the request info stored in ui state
     if (this.ui) {
-      this.requestMap = {...this.requestMap, ...this.ui.state.requestMap}
+      this.requestMap = {...this.ui.state.requestMap, ...this.requestMap}
     }
 
-    // 如果请求不存在则添加，否则更新请求信息
+    // create a new request entry if the request id doesn't exist
+    // otherwise update the found request entry
     const foundRequest = this.requestMap[id]
     if (!foundRequest) {
       this.requestMap[id] = req
@@ -127,6 +125,35 @@ export default class NetworkPlugin extends Plugin {
   }
 }
 
+const utils = {
+  get: (xhr, key) => {
+    if (xhr && xhr.__xconsole__) {
+      return xhr.__xconsole__[key]
+    } else {
+      return undefined
+    }
+  },
+  set: (xhr, key, value) => {
+    if (!xhr) {
+      console.error('xhr is empty')
+      return
+    }
+
+    if (!xhr.__xconsole__) {
+      xhr.__xconsole__ = {}
+    }
+
+    xhr.__xconsole__[key] = value
+  },
+  has: (xhr, key) => {
+    if (xhr && xhr.__xconsole__) {
+      return xhr.__xconsole__[key] !== undefined
+    } else {
+      return false
+    }
+  }
+}
+
 /**
- * @typedef {{[id: string]: {id: string, url: string, method: string, status: number}}} RequestMap
+ * @typedef {{[id: string]: {id: string, url: string, method: string, status: number}}} requestmap
  */
