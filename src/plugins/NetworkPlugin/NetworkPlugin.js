@@ -1,5 +1,5 @@
 import React from 'react'
-import Plugin from '../Plugin'
+import Plugin from '../../core/Plugin'
 import {isFunction, uuid} from '../../utils'
 import NetworkPanel from './NetworkPanel'
 
