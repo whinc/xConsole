@@ -16,7 +16,7 @@ export default class Plugin {
 
   // render plugin content. return dom element.
   render () {
-    console.log(`[${this.name}]Plugin#render() called`)
+    // console.log(`[${this.name}]Plugin#render() called`)
     return null
   }
 
@@ -24,14 +24,14 @@ export default class Plugin {
   // This event will only be trigger once.
   // Note that plugin's DOM is not ready now.
   onInit () {
-    console.log(`[${this.name}Plugin] onInit() called`)
+    // console.log(`[${this.name}Plugin] onInit() called`)
   }
 
   // Trigger when all initialization is finished.
   // This event will only be triggered once.
   // Now plugin is installed and it's DOM is ready.
   onReady () {
-    console.log(`[${this.name}Plugin] onReady() called`)
+    // console.log(`[${this.name}Plugin] onReady() called`)
   }
 
   onRemove () {
@@ -40,19 +40,19 @@ export default class Plugin {
 
   // Plugin is going to be shown
   onShow () {
-    console.log(`[${this.name}Plugin] onShow() called`)
+    // console.log(`[${this.name}Plugin] onShow() called`)
   }
 
   // Plugin is going to be hidden
   onHide () {
-    console.log(`[${this.name}Plugin] onHide() called`)
+    // console.log(`[${this.name}Plugin] onHide() called`)
   }
 
   onXConsoleShow () {
-    console.log(`[${this.name}Plugin] onXConsoleShow() called`)
+    // console.log(`[${this.name}Plugin] onXConsoleShow() called`)
   }
 
   onXConsoleHide () {
-    console.log(`[${this.name}Plugin] onXConsoleHide() called`)
+    // console.log(`[${this.name}Plugin] onXConsoleHide() called`)
   }
 }
