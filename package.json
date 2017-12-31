@@ -45,7 +45,7 @@
     "test": "react-scripts test --env=jsdom --setupTestFrameworkScriptFile='./enmyze.config.js'",
     "analyze": "source-map-explorer build/static/js/main.*",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "npm login && gh-pages -d build"
   },
   "standard": {
     "parser": "babel-eslint",
