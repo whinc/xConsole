@@ -1,25 +1,62 @@
-.ConsolePanel, .xc-console-panel {
+.ConsolePanel {
   height: 60vh;
   display: flex;
   flex-direction: column;
 }
 
-.xc-console-panel__toolbar {
+.ConsolePanel__toolbar{
   flex: 0 0 25px;
   border-bottom: 1px solid silver;
-  align-items: center;
 }
 
-.xc-console-panel__clear {
-  padding: 5px;
-}
-
-.xc-console-panel__content {
+.ConsolePanel__content{
   flex: 1 1 calc(60vh - 20px);
   overflow-y: scroll;
 }
 
-.ConsolePanel-setting {
+.ConsolePanel__setting {
   display: flex;
-  flex-direction: column;
+  padding: 10px 5px;
+  border-bottom: 1px solid rgb(218, 218, 218); 
+}
+
+.ConsolePanel-toolbar{
+  display: flex;
+  align-items: center;
+}
+
+.ConsolePanel-toolbar__clear {
+  flex: 0 0;
+  padding: 5px;
+}
+
+.ConsolePanel-toolbar__filter {
+  flex: 1 1;
+  display: flex;
+}
+
+.ConsolePanel-toolbar__empty {
+  flex: 1 1;
+}
+
+.ConsolePanel-toolbar__setting {
+  flex: 0 0;
+  padding: 5px;
+}
+
+.ConsolePanel-expression {
+  display: flex;
+  padding-right: 5px;
+  margin-top: 2px;
+}
+
+.ConsolePanel-expression__input {
+  flex: 1 0;
+  padding: 0px 5px;
+  margin-right: 5px;
+  resize: none;
+}
+
+.ConsolePanel-expression__button {
+  flex: 0 0;
 }

@@ -22,8 +22,10 @@ export default class TextInlineBlock extends React.Component {
      * -1: show the proprty of the value recursionly
      *
      * For example, the value is {a: 1, b: {c: 2}, [1, 2]}
-     * show 'Object' when depth is 0
+     * show type of the value(e.g. 'Object', 'Array') when depth is 0
      * show '{a: 1, b: {...}, Array(2)}' when depth is 1
+     * show '{a: 1, b: {c: 2, d: {...}}, Array(2)}' when depth is 2
+     * ...
      * show '{a: 1, b: {c: 2}, [1, 2]}' when depth is -1
      */
     depth: PropTypes.number,
@@ -74,7 +76,7 @@ export default class TextInlineBlock extends React.Component {
         </span>
       )
     } else if (isArray(value)) {
-      if (depth !== 0 && value.length > 0) {
+      if (name && depth !== 0 && value.length > 0) {
         element = (
           <span>
             {'['}
@@ -92,7 +94,7 @@ export default class TextInlineBlock extends React.Component {
       }
     } else if (isObject(value)) {
       const keys = Object.keys(value)
-      if (depth !== 0 && keys.length > 0) {
+      if (name && depth !== 0 && keys.length > 0) {
         element = (
           <span>
             {'{'}
@@ -111,7 +113,7 @@ export default class TextInlineBlock extends React.Component {
         element = <span>Object</span>
       }
     } else {
-      element = <span>String(value)</span>
+      element = <span>{String(value)}</span>
     }
 
     return <span className='TextInlineBlock'>{element}</span>

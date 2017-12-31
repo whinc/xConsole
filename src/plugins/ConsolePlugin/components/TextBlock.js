@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import isObject from 'lodash.isobject'
-import isArray from 'lodash.isarray'
 import isBoolan from 'lodash.isboolean'
 import isString from 'lodash.isstring'
 import isNumber from 'lodash.isnumber'
@@ -11,6 +10,7 @@ import isFunction from 'lodash.isfunction'
 import isSymbol from 'lodash.issymbol'
 import './TextBlock.css'
 import TextInlineBlock from './TextInlineBlock'
+import ErrorBoundary from './ErrorBoundary'
 
 const INDENT = 5
 
@@ -233,11 +233,13 @@ export default class TextBlock extends React.Component {
             {name && <span className='TextBlock__separator'>{': '}</span>}
             <span className={valueClass}>
               {/* {this.createSummary(value, name, true)} */}
-              <TextInlineBlock
-                name={name}
-                value={value}
-                depth={0}
-              />
+              <ErrorBoundary>
+                <TextInlineBlock
+                  name={name}
+                  value={value}
+                  depth={0}
+                />
+              </ErrorBoundary>
             </span>
           </span>
         )
@@ -258,11 +260,13 @@ export default class TextBlock extends React.Component {
               {name && <span className={nameClass}>{name}</span>}
               {name && <span className='TextBlock__separator'>{': '}</span>}
               <span className={valueClass}>
-                <TextInlineBlock
-                  name={name}
-                  value={value}
-                  depth={(isFolded || !name) ? 1 : 0}
-                />
+                <ErrorBoundary>
+                  <TextInlineBlock
+                    name={name}
+                    value={value}
+                    depth={isFolded ? 1 : 0}
+                  />
+                </ErrorBoundary>
                 {/* {this.createSummary(value, name, isFolded)} */}
               </span>
             </span>

@@ -1,5 +1,6 @@
 import React from 'react'
 import './NetworkPanel.css'
+import {Table, SidePanel} from './components'
 
 export default class NetworkPluginPanel extends React.Component {
   constructor (props) {
@@ -9,32 +10,43 @@ export default class NetworkPluginPanel extends React.Component {
        * 请求信息
        * @type {{[id: string]: {id: string, url: string, method: string, status: number}}}
        */
-      requestMap: props.requestMap || {}
+      requestMap: props.requestMap || {},
+      selectedEntry: null,
+      isSidePanelOpen: false
     }
   }
 
+  closeSidePanel () {
+    this.setState({
+      isSidePanelOpen: false,
+      selectedEntry: null
+    })
+  }
+
+  openSidePanel (entry) {
+    this.setState({
+      isSidePanelOpen: true,
+      selectedEntry: entry
+    })
+  }
+
   render () {
-    const {requestMap} = this.state
+    const {requestMap, isSidePanelOpen, selectedEntry} = this.state
 
     return (
-      <div style={{height: '60vh'}}>
-        <div className='xcui-rows'>
-          <div className='xc-rows__item xc-cols'>
-            <span className='xc-cols__item xc--text-center'>Name</span>
-            <span className='xc-cols__item xc-cols__item--15 xc--text-center'>Method</span>
-            <span className='xc-cols__item xc-cols__item--15 xc--text-center'>Status</span>
+      <div className='NetworkPanel'>
+        <Table
+          entries={Object.keys(requestMap).map(key => requestMap[key])}
+          onClickEntry={entry => this.openSidePanel(entry)}
+        />
+        {isSidePanelOpen &&
+          <div className='NetworkPanel__detail' >
+            <SidePanel
+              entry={selectedEntry}
+              onClose={() => this.closeSidePanel()}
+            />
           </div>
-          {Object.keys(requestMap).map(id => {
-            const req = requestMap[id]
-            return (
-              <div className='xc-rows__item xc-cols' key={id}>
-                <span className='xc-cols__item'>{req.url}</span>
-                <span className='xc-cols__item xc-cols__item--15 xc--text-center'>{req.method}</span>
-                <span className='xc-cols__item xc-cols__item--15 xc--text-center'>{req.status !== undefined ? req.status : '--'}</span>
-              </div>
-            )
-          })}
-        </div>
+        }
       </div>
     )
   }
